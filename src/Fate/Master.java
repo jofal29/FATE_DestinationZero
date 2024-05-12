@@ -9,13 +9,11 @@ public class Master {
     int maxServants = 0;
     int numOfServants = 0;
     int extraTurns = 0;
+    int count;
 
     boolean active = true;
 
     public ArrayList<Item> masterItems = new ArrayList<>();
-
-    //Plan to allow Masters to have multiple servants in the future
-    public static final Hashtable<String, HeroicSpirit> ownedServants = new Hashtable<>();
 
     public Master(int masterNum, int numServants) {
         masterID_Number = masterNum;
@@ -44,8 +42,18 @@ public class Master {
         return masterItems;
     }
 
-    public Hashtable<String, HeroicSpirit> getOwnedServants() {
-        return ownedServants;
+    public Boolean itemExists(String name) {
+        count = 0;
+        for (Item masterItem : masterItems) {
+            if (masterItem.itemName.equals(name)) {
+                count++;
+            }
+        }
+        if(count >0){
+            return true;
+        }
+        else{
+            return false;
+        }
     }
-
 }

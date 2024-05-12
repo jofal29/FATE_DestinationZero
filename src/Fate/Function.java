@@ -1,5 +1,6 @@
 package Fate;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -30,5 +31,8 @@ public class Function {
     }
     public ConcurrentHashMap<Integer, Master> getMasters(){
         return HolyGrailWar.masters;
+    }
+    public ArrayList<Integer> getRemainingMasters(){
+        return HolyGrailWar.remainingMasters;
     }
 }

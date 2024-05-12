@@ -9,10 +9,10 @@ public class Action {
     HeroicSpirit attacker = new HeroicSpirit();
     HeroicSpirit target = new HeroicSpirit();
     String itemName;
-    int itemNumber;
+    int count;
     boolean isTrue = true;
 
-    public void useItem(String itemName, Master master, HeroicSpirit attacker, HeroicSpirit target){
+    public void useItem(Master master, int masterID){
         //Show Your Hand
         master.displayItems();
         function.pause(1);
@@ -26,14 +26,12 @@ public class Action {
 
         //Master Chooses An Item
         while(isTrue) {
-
             //Shows New Item Name Into Master's ArrayList
             master.displayItems();
             System.out.println("Choose an action.");
             String itemChoice = UserInput.getInput();
 
-
-            if (Dictionary.itemDictionary.contains(itemChoice) && master.masterItems.contains(itemChoice)) {
+            if (Dictionary.itemDictionary.contains(itemChoice) && master.itemExists(itemChoice)) {
                 Item removeThisItem = null;
                 for (int i = 0; i < master.masterItems.size(); i++) {
                     if (Objects.equals(master.masterItems.get(i).itemName, itemChoice)) {
@@ -45,13 +43,129 @@ public class Action {
                 isTrue = false;
             } else {
                 System.out.println("Please Enter a Correct Item Name.");
+                System.out.println();
             }
         }
+        isTrue = true;
+
+        //Choose a Servant
+        while(isTrue){
+
+            //Players Turn
+            if(masterID==1){
+
+                //Display Masters and Servants
+                System.out.println("Choose a master to attack.");
+                System.out.println("Remaining Masters and Servants: ");
+                for(int i=0; i<function.getMasters().size(); i++) {
+                    System.out.print("Master: " + function.getRemainingMasters().get(i) + " -> | Servant: " + function.getServant(masterID));
+                    if (function.getServant(masterID).next != null) {
+                        HeroicSpirit node = function.getServant(masterID);
+                        while(node.next != null) {
+                            System.out.print("  | " + node.name);
+                            node = node.next;
+                        }
+                        System.out.print("  | " + node.name);
+                    }
+                }
 
 
+                int targetedMaster = Integer.parseInt(UserInput.getInput());
+                //Check if That Master Has Multiple Servants
+                int targetedMaster = Integer.parseInt(UserInput.getInput());
+                if(function.getServant(targetedMaster).next != null){
+                    System.out.println("Choose a specific servant. ");
+                    HeroicSpirit node = function.getServant(targetedMaster);
+                    count = 1;
+                    while(node.next != null){
+                        System.out.print(count+". "+node.name+ " ");
+                        count++;
+                        node = node.next;
+                    }
+                    System.out.print(count + ". " + function.getServant(targetedMaster).name);
+
+                    //Assign Servant
+
+
+                }
+                else{
+                    count = 1;
+                }
+
+                    System.out.print(count + ". " + function.getServant(targetedMaster).name);
+                }
+
+
+
+                String targetedServant
+            }
+
+
+            }
+
+    public void temp(){
+        System.out.println("Choose a master to attack.");
+        System.out.println("Remaining Masters and Servants: ");
+        displayMastersAndServants();
     }
 
+    public void chooseMasterAndServant() {
 
+
+    // Check if that master has multiple servants
+        if (targetedMaster > 0 && function.getServant(targetedMaster).next != null) {
+        System.out.println("Choose a specific servant. ");
+        displayServants(targetedMaster);
+
+        // Take user input for which servant to choose
+        System.out.println("Enter a number to choose a servant, or 0 to quit: ");
+        int targetedServant = getUserInput();
+
+        // If user wants to quit, skip the servant selection part
+        if (targetedServant != 0) {
+            // Assign Servant
+            function.assignServant(targetedMaster, targetedServant);
+            System.out.println("Servant " + function.getServant(targetedMaster).name + " assigned to Master " + function.getMasters().get(targetedMaster));
+        }
+    } else if (targetedMaster == 0) {
+        System.out.println("Quitting...");
+    } else {
+        System.out.println("Invalid input. Please enter a valid master number or 0 to quit.");
+    }
+}
+
+private static int getUserInput() {
+    Scanner scanner = new Scanner(System.in);
+    int userInput = scanner.nextInt();
+    return userInput;
+}
+
+// Display Masters and Servants
+private static void displayMastersAndServants() {
+    for (int i = 0; i < function.getMasters().size(); i++) {
+        System.out.print("Master: " + function.getRemainingMasters().get(i) + " -> | Servant: " + function.getServant(i));
+        if (function.getServant(i).next != null) {
+            HeroicSpirit node = function.getServant(i);
+            while (node.next != null) {
+                System.out.print("  | " + node.name);
+                node = node.next;
+            }
+            System.out.print("  | " + node.name);
+        }
+        System.out.println();
+    }
+}
+
+private static void displayServants(int masterNumber) {
+    HeroicSpirit node = function.getServant(masterNumber);
+    int count = 1;
+    while (node.next != null) {
+        System.out.print(count + ". " + node.name + " ");
+        count++;
+        node = node.next;
+    }
+    System.out.print(count + ". " + function.getServant(masterNumber).name);
+}
 
 
 

@@ -47,8 +47,8 @@ public class Play {
                 {
                     //Checks if the master is the player, if so, it's the player's turn.
                     if(currentMasterTurn == 1){
-                        action.useItem();
-  //                      action.chooseAction(playersTurn(getMaster(1)), chooseServants(1));
+                        action.useItem(getMaster(currentMasterTurn), currentMasterTurn);
+                        action.chooseAction(playersTurn(getMaster(1)), chooseServants(1));
                         extraTurn(1);
                         playAnalysis();
                         endOfMasterTurn(getServant(1));
@@ -213,41 +213,6 @@ public class Play {
             }
             nodeCursor = nodeCursor.next;
         }
-    }
-
-    private String playersTurn(Master m) {
-
-        //Shows Your Hand
-        m.displayItems();
-        pause(1);
-        System.out.println();
-
-        //Get Random Items Object and Add Into Master's ArrayList<Items>
-        System.out.println("Drawing Card...");
-        newLine();
-        m.myActions.add(HolyGrailWar.drawItem());
-        pause(1);
-
-        //Shows New Names of Items in Master's ArrayList
-        m.displayItems();
-        System.out.println("Choose an action. Type exactly what is shown please.");
-        String itemChoice = UserInput.getInput();
-
-        while(isTrue) {
-            if (m.myActions.contains(itemChoice)) {
-                Action removeThisAction = null;
-                for (int i = 0; i < m.myActions.size(); i++) {
-                    if (Objects.equals(m.myActions.get(i).itemName, itemChoice)) {
-                        removeThisAction = m.myActions.get(i);
-                    }
-                }
-                m.myActions.remove(removeThisAction);
-                isTrue = false;
-            } else {
-                System.out.println("Please Enter a Correct Item Name.");
-            }
-        }
-        return itemChoice;
     }
 
     private String botTurn(Master m) {
