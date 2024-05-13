@@ -23,16 +23,13 @@ public class Function {
     public Master getMaster(int masterID){
         return HolyGrailWar.masters.get(masterID);
     }
-    public HeroicSpirit getServant (int masterID){
-        return HolyGrailWar.summonedServants.get(masterID);
-    }
-    public ConcurrentHashMap<Integer, HeroicSpirit> getServants(){
-        return HolyGrailWar.summonedServants;
-    }
     public ConcurrentHashMap<Integer, Master> getMasters(){
         return HolyGrailWar.masters;
     }
     public ArrayList<Integer> getRemainingMasters(){
         return HolyGrailWar.remainingMasters;
+    }
+    public Queue<Item> getItemQueue(){
+        return HolyGrailWar.itemQueue;
     }
 }

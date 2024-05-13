@@ -42,14 +42,14 @@ public class NoblePhantasm {
     private void addRestriction(String servantInControl) {
         if(searchFor.status==true)
         {
-            for(Integer j : HolyGrailWar.totalServants().keySet())
+            for(Integer j : HolyGrailWar.getSummonedServants().keySet())
             {
-                if(HolyGrailWar.totalServants().get(j).getName().toString()==searchFor.assignedServant.getName().toString())
+                if(HolyGrailWar.getSummonedServants().get(j).getName().toString()==searchFor.assignedServant.getName().toString())
                 {
                     System.out.println("Target Found: "+searchFor.assignedServant.getName().toString());
-                    HolyGrailWar.totalServants().get(j).restrictions.add(servantInControl);
+                    HolyGrailWar.getSummonedServants().get(j).restrictions.add(servantInControl);
                     check.updateMasters();
-                    check.checkLives(HolyGrailWar.totalServants().get(j));				}
+                    check.checkLives(HolyGrailWar.getSummonedServants().get(j));				}
                 else {}}}
         else {
         }
@@ -58,12 +58,12 @@ public class NoblePhantasm {
     public void hitTarget(String np) {
         if(searchFor.status==true)
         {
-            for(Integer j : HolyGrailWar.totalServants().keySet())
+            for(Integer j : HolyGrailWar.getSummonedServants().keySet())
             {
-                if(HolyGrailWar.totalServants().get(j).getName() == searchFor.assignedServant.getName())
+                if(HolyGrailWar.getSummonedServants().get(j).getName() == searchFor.assignedServant.getName())
                 {
                     System.out.println("Target Found: "+ searchFor.assignedServant.getName());
-                    cause.chooseAction(np, HolyGrailWar.totalServants().get(j));
+                    cause.chooseAction(np, HolyGrailWar.getSummonedServants().get(j));
                     check.playAnalysis();
 //						check.updateMasters();
 //						check.checkDeathEffects();
@@ -310,7 +310,7 @@ public class NoblePhantasm {
     }
     private void emiyaNP() {
         System.out.println("	 "+"I am the bone of my sword... Unlimited BladeWorks");
-        int initialNum = HolyGrailWar.totalServants().size();
+        int initialNum = HolyGrailWar.getSummonedServants().size();
         for(int i=0; i<3; i++) {
             searchFor.excludingSelf("Species","Human","Emiya");
             searchFor.servantChoice();
@@ -318,7 +318,7 @@ public class NoblePhantasm {
             check.playAnalysis();
             searchFor.clearList();
         }
-        if(HolyGrailWar.totalServants().size()==initialNum){
+        if(HolyGrailWar.getSummonedServants().size()==initialNum){
             searchFor.excludingSelf("Any","Any","Heracles");
             searchFor.servantChoice();
             hitTarget("takeLife");

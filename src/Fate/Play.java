@@ -5,8 +5,9 @@ import java.util.Objects;
 import java.util.Random;
 
 public class Play {
-    Action action = new Action("Random");
+    Action action = new Action();
     Random rand = new Random();
+    Function function = new Function();
 
     int turnNumber = 0;
     int currentMasterTurn = 0;
@@ -92,6 +93,8 @@ public class Play {
     private ArrayList<Integer> getRemainingMasters(){
         return HolyGrailWar.remainingMasters;
     }
+    //Method that allows the user to draw an item.
+    //To always have the queue be full, we add an item onto the queue before the master draws an item.
 
     private void extraTurn(int numMaster) {
         if(HolyGrailWar.masters.get(numMaster) != null){
@@ -371,26 +374,5 @@ public class Play {
         else {}
     }
 
-    //Helper Functions
-    public void pause(int seconds) {
-        int i = 0;
-        while(i < seconds){
-        try{Thread.sleep(1000);
-        i++;}
-        catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        }
-    }
-
-    public void newLine(){
-        System.out.println(" ");
-    }
-    public Master getMaster(int masterID){
-        return HolyGrailWar.masters.get(masterID);
-    }
-    public HeroicSpirit getServant (int masterID){
-        return HolyGrailWar.summonedServants.get(masterID);
-    }
 
 }

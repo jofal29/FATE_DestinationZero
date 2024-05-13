@@ -9,13 +9,17 @@ public class HolyGrailWar {
     int numOfMasters;
     int numOfServants;
     public static final Queue<Item> itemQueue = new Queue<>();
+
+    //public static ConcurrentHashMap<Integer, LinkedList<HeroicSpirit>> summonedServants = new ConcurrentHashMap<>();
     public static ConcurrentHashMap<Integer, Master> masters = new ConcurrentHashMap<>();
-    public static ConcurrentHashMap<Integer, HeroicSpirit> summonedServants = new ConcurrentHashMap<>();
     public static final Hashtable<String, HeroicSpirit> deceased = new Hashtable<>();
-    public static final HashSet<String> servantsWithDeathEffects = new HashSet<>();
     public static ArrayList<Integer> remainingMasters = new ArrayList<>();
-    Play pause = new Play();
+
+    public static final HashSet<String> servantsWithDeathEffects = new HashSet<>();
+
+    Play play = new Play();
     Function function = new Function();
+    Action action = new Action();
 
     //Calls the methods to set up the game
     public HolyGrailWar() {
@@ -34,6 +38,8 @@ public class HolyGrailWar {
         System.out.println("- Each master starts with a servant. Last master with a servant in the game wins.");
         System.out.println("- At the start of your turn, you MUST draw a card (an item) before playing any cards.");
         System.out.println("- Master MUST play at least one card. Master can play up to THREE cards");
+        System.out.println("- Masters start with one servant but may increase their team of servants.");
+        System.out.println("- A Master is instantly ELIMINATED once they have no servant.");
         System.out.println("- Noble Phantasm (NP) is the heroic spirit's special power or ability. It is based off their legends");
         System.out.println("- 3 Np Charges = 1 NP. *Varies between heroic spirits.");
         System.out.println("- Max Shields Matches Max Hearts");
@@ -58,7 +64,7 @@ public class HolyGrailWar {
             //0 = exit the program
             if (input.equals("0")) {
                 System.out.println("Aw alright :( Exiting Fate/Stay Night: Destination Zero...");
-                pause.pause(2);
+                play.pause(2);
                 System.exit(0);
             }
 
@@ -114,37 +120,17 @@ public class HolyGrailWar {
         ThroneOfHeroes throneOfHeroes = new ThroneOfHeroes();
         throneOfHeroes.initializeThrone();
 
-        //Assigns Heroic Spirits To The Masters
+        // Assigns Heroic Spirits To The Masters + Printout Masters & Servants
         int masterNumber = 1;
-        for(int i=0; i<numOfMasters; i++){
-            for(int j=0; j<numOfServants; j++) {
+        for (int i = 0; i < numOfMasters; i++) {
+            System.out.println("Master " + masterNumber + ", Servant(s): ");
+            for (int j = 0; j < numOfServants; j++) {
                 HeroicSpirit servant = throneOfHeroes.summonAny();
                 servant.masterID = masterNumber;
-                masters.get(masterNumber).getOwnedServants().put("default", servant);
-
-                // Add key-value pairs to the hashtable
-                if(summonedServants.containsKey(masterNumber)) {
-                    summonedServants.get(masterNumber).next = servant;
-                }
-                else{
-                    summonedServants.put(masterNumber, servant);
-                }
+                function.getMaster(masterNumber).servantList.add(servant);
+                System.out.print(servant.name + " | ");
             }
             masterNumber++;
-        }
-
-        // Print the contents of the hashtable
-        for (int key = 1; key<remainingMasters.size()+1;key++) {
-            HeroicSpirit node = summonedServants.get(key);
-            System.out.print("Master: " + key + ", Servant: ");
-            while (node!= null) {
-                System.out.print(node.name);
-                node = node.next;
-                if (node!= null) {
-                    System.out.print(", ");
-                }
-            }
-            System.out.println();
         }
     }
 
@@ -167,49 +153,43 @@ public class HolyGrailWar {
         int hand = 0;
         for(Integer masterNumber : masters.keySet()) {
             while (hand < 3) {
-                masters.get(masterNumber).getMasterItems().add(drawItem());
+                function.getMaster(masterNumber).getMasterItems().add(action.drawItem());
                 hand++;
             }
         }
     }
 
-    //Method that allows the user to draw an item.
-    //To always have the queue be full, we add an item onto the queue before the master draws an item.
-    public static Item drawItem(){
-        while(itemQueue.size()<10) {
-            itemQueue.enqueue(new Item("Random"));
-        }
-        return itemQueue.dequeue();
-    }
-
     //Updates the status of the servants
     public void update() {
-        for (Integer key : summonedServants.keySet())
-        {
-            System.out.println("\n" + "-----------------------------------------");
-            System.out.println(summonedServants.get(key).name + " has " + summonedServants.get(key).hearts + " left.");
+
+        //Print Surviving Servants
+        // iterate through the master objects, O(1) because only one should be left.
+        for (Master master : masters.values()) {
+            System.out.println("-----------------------------------------");
+            System.out.println("Master ID#" + master.masterID_Number + " has " + master.getServantList().size() + " remaining servants.");
+
+            // iterate through the linked list of heroic spirits
+            for (HeroicSpirit servant : master.getServantList()) {
+                System.out.println(servant.name + " has " + servant.hearts + " left.");
+            }
         }
-        for (String key : deceased.keySet())
-        {
+
+        //Print Deceased Servants
+        for (String key : deceased.keySet()) {
             System.out.println("---------------Defeated------------------");
             System.out.println(deceased.get(key).getName() + " has 0 left.");
         }
     }
 
-    public static ConcurrentHashMap<Integer, HeroicSpirit> totalServants() {
-        return summonedServants;
-    }
-    public static ConcurrentHashMap<Integer, Master> getMasters() {
-        return masters;
-    }
-
     //Provides stats of the winner
     public void winner() {
-            for (Integer key : masters.keySet()) {
-            System.out.println("\n" + "Master ID#: " + masters.get(key).masterID_Number + " and ");
+        for (Master master : masters.values()) {
+            System.out.println("-----------------------------------------");
+            System.out.println("Master ID#" + master.masterID_Number + " | and ");
 
-            for (String k : masters.get(key).ownedServants.keySet()) {
-                System.out.print(masters.get(key).ownedServants.get(k).getName());
+            // iterate through the linked list of heroic spirits
+            for (HeroicSpirit servant : master.getServantList()) {
+                System.out.println(servant.name + " | ");
             }
             System.out.print(" are the Winner!");
         }

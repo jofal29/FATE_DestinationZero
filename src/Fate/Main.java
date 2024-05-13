@@ -9,7 +9,7 @@ public class Main {
         String gameStatus = "In Progress";
         Dictionary dictionary = new Dictionary();
 
-        while(gameStatus == "In Progress") {
+        while(gameStatus.equals("In Progress")) {
             HolyGrailWar hgw = new HolyGrailWar();
             Play Game_One = new Play();
             Game_One.playGame();
@@ -21,6 +21,9 @@ public class Main {
                 gameStatus = "In Progress";
                 System.out.println("Starting New Game...");
                 System.out.println();
+            }
+            else{
+                gameStatus = "Finished";
             }
         }
 

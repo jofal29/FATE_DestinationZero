@@ -2,6 +2,7 @@ package Fate;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.LinkedList;
 
 public class Master {
     int masterID_Number = 0;
@@ -14,6 +15,8 @@ public class Master {
     boolean active = true;
 
     public ArrayList<Item> masterItems = new ArrayList<>();
+
+    public LinkedList<HeroicSpirit> servantList = new LinkedList<>();
 
     public Master(int masterNum, int numServants) {
         masterID_Number = masterNum;
@@ -38,6 +41,9 @@ public class Master {
         }
     }
 
+    public LinkedList<HeroicSpirit> getServantList() {
+        return servantList;
+    }
     public ArrayList<Item> getMasterItems() {
         return masterItems;
     }

@@ -1,5 +1,6 @@
 package Fate;
 
+import java.util.LinkedList;
 import java.util.Objects;
 import java.util.Random;
 
@@ -53,146 +54,120 @@ public class Action {
 
             //Players Turn
             if(masterID==1){
-
-                //Display Masters and Servants
+                int targetedMaster;
                 System.out.println("Choose a master to attack.");
                 System.out.println("Remaining Masters and Servants: ");
-                for(int i=0; i<function.getMasters().size(); i++) {
-                    System.out.print("Master: " + function.getRemainingMasters().get(i) + " -> | Servant: " + function.getServant(masterID));
-                    if (function.getServant(masterID).next != null) {
-                        HeroicSpirit node = function.getServant(masterID);
-                        while(node.next != null) {
+
+                //Display Masters and Servants
+                for (int i = 0; i < function.getMasters().size(); i++) {
+                    System.out.print("Master: " + function.getRemainingMasters().get(i) + " -> | Servant: " + function.getServant(i));
+                    if (function.getServant(i).next != null) {
+                        HeroicSpirit node = function.getServant(i);
+                        while (node.next != null) {
                             System.out.print("  | " + node.name);
                             node = node.next;
                         }
                         System.out.print("  | " + node.name);
                     }
+                    System.out.println();
                 }
 
+                //Take user input between which master choice
+                System.out.println("Enter a number to choose a master, or 0 to quit: ");
+                targetedMaster = UserInput.getIntInput();
+                while (targetedMaster < 0 || targetedMaster > function.getMasters().size() || targetedMaster == 0) {
+                    if (targetedMaster == 0) {
+                        System.out.println("Exiting...");
+                        System.exit(0);
+                    }
+                    System.out.println("Invalid input. Please enter a number between 1 and " + function.getRemainingMasters().size() + ", or 0 to quit:");
+                    targetedMaster = UserInput.getIntInput();
+                }
 
-                int targetedMaster = Integer.parseInt(UserInput.getInput());
-                //Check if That Master Has Multiple Servants
-                int targetedMaster = Integer.parseInt(UserInput.getInput());
-                if(function.getServant(targetedMaster).next != null){
+                //Check if that master has multiple servants
+                if (function.getServant(targetedMaster).next != null) {
                     System.out.println("Choose a specific servant. ");
+
+                    //Display Servants
                     HeroicSpirit node = function.getServant(targetedMaster);
-                    count = 1;
-                    while(node.next != null){
-                        System.out.print(count+". "+node.name+ " ");
+                    int count = 1;
+                    while (node.next != null) {
+                        System.out.print(count + ". " + node.name + " ");
                         count++;
                         node = node.next;
                     }
-                    System.out.print(count + ". " + function.getServant(targetedMaster).name);
+                    System.out.print(count + ". " + node.name);
 
-                    //Assign Servant
-
-
+                    //Take user input for which servant to choose
+                    System.out.println("Enter a number to choose a servant, or 0 to quit: ");
+                    boolean wrongInput = true;
+                    int servantChoice = -1;
+                    while(wrongInput){
+                        try {
+                            servantChoice = UserInput.getIntInput();
+                            if(servantChoice == 0) {
+                                System.out.println("Exiting...");
+                                System.exit(0);
+                            }
+                            if (servantChoice < 0 || servantChoice > 7) {
+                                System.out.println("Invalid input. Please enter a number between 1 and 7, or 0 to exit.");
+                                function.newLine();
+                            }
+                            else{
+                                wrongInput = false;
+                            }
+                        }
+                        catch (NumberFormatException e) {
+                            System.out.println("That's not even a number -_- ... Please enter a number between 0 and 7.");
+                            function.newLine();
+                        }
+                    }
                 }
                 else{
-                    count = 1;
+                    System.out.println("Targeting "+ function.getServant(targetedMaster));
                 }
-
-                    System.out.print(count + ". " + function.getServant(targetedMaster).name);
-                }
-
-
-
-                String targetedServant
             }
 
-
+            //Bot's Turn
+            else{
+                Linked3
             }
-
-    public void temp(){
-        System.out.println("Choose a master to attack.");
-        System.out.println("Remaining Masters and Servants: ");
-        displayMastersAndServants();
-    }
-
-    public void chooseMasterAndServant() {
-
-
-    // Check if that master has multiple servants
-        if (targetedMaster > 0 && function.getServant(targetedMaster).next != null) {
-        System.out.println("Choose a specific servant. ");
-        displayServants(targetedMaster);
-
-        // Take user input for which servant to choose
-        System.out.println("Enter a number to choose a servant, or 0 to quit: ");
-        int targetedServant = getUserInput();
-
-        // If user wants to quit, skip the servant selection part
-        if (targetedServant != 0) {
-            // Assign Servant
-            function.assignServant(targetedMaster, targetedServant);
-            System.out.println("Servant " + function.getServant(targetedMaster).name + " assigned to Master " + function.getMasters().get(targetedMaster));
         }
-    } else if (targetedMaster == 0) {
-        System.out.println("Quitting...");
-    } else {
-        System.out.println("Invalid input. Please enter a valid master number or 0 to quit.");
     }
-}
 
-private static int getUserInput() {
-    Scanner scanner = new Scanner(System.in);
-    int userInput = scanner.nextInt();
-    return userInput;
-}
 
-// Display Masters and Servants
-private static void displayMastersAndServants() {
-    for (int i = 0; i < function.getMasters().size(); i++) {
-        System.out.print("Master: " + function.getRemainingMasters().get(i) + " -> | Servant: " + function.getServant(i));
-        if (function.getServant(i).next != null) {
-            HeroicSpirit node = function.getServant(i);
-            while (node.next != null) {
-                System.out.print("  | " + node.name);
-                node = node.next;
-            }
-            System.out.print("  | " + node.name);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public Item drawItem(){
+        while(function.getItemQueue().size()<10) {
+            function.getItemQueue().enqueue(new Item("Random"));
         }
-        System.out.println();
+        return function.getItemQueue().dequeue();
     }
-}
-
-private static void displayServants(int masterNumber) {
-    HeroicSpirit node = function.getServant(masterNumber);
-    int count = 1;
-    while (node.next != null) {
-        System.out.print(count + ". " + node.name + " ");
-        count++;
-        node = node.next;
-    }
-    System.out.print(count + ". " + function.getServant(masterNumber).name);
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public void chooseAction(String action, HeroicSpirit targetedServant) {
         if(Objects.equals(targetedServant.checkImmune(action), "not immune")) {
@@ -458,5 +433,6 @@ private static void displayServants(int masterNumber) {
             }}
         else{
             System.out.println(ser.getName()+ " is immune to " + string);
-        }}
+        }
+    }
 }
