@@ -1,6 +1,5 @@
 package Fate;
 
-import java.util.LinkedList;
 import java.util.Objects;
 import java.util.Random;
 
@@ -13,166 +12,45 @@ public class Action {
     int count;
     boolean isTrue = true;
 
-    public void useItem(Master master, int masterID){
-        //Show Your Hand
-        master.displayItems();
-        function.pause(1);
-        function.newLine();
-
-        //Get random Items Object and Add Into Master's ArrayList<Items>
-        System.out.println("Drawing Card...");
-        function.newLine();
-        master.masterItems.add(HolyGrailWar.drawItem());
-        function.pause(1);
-
-        //Master Chooses An Item
-        while(isTrue) {
-            //Shows New Item Name Into Master's ArrayList
-            master.displayItems();
-            System.out.println("Choose an action.");
-            String itemChoice = UserInput.getInput();
-
-            if (Dictionary.itemDictionary.contains(itemChoice) && master.itemExists(itemChoice)) {
-                Item removeThisItem = null;
-                for (int i = 0; i < master.masterItems.size(); i++) {
-                    if (Objects.equals(master.masterItems.get(i).itemName, itemChoice)) {
-                        removeThisItem = master.masterItems.get(i);
-                        break;
-                    }
-                }
-                master.masterItems.remove(removeThisItem);
-                isTrue = false;
-            } else {
-                System.out.println("Please Enter a Correct Item Name.");
-                System.out.println();
-            }
-        }
-        isTrue = true;
-
-        //Choose a Servant
-        while(isTrue){
-
-            //Players Turn
-            if(masterID==1){
-                int targetedMaster;
-                System.out.println("Choose a master to attack.");
-                System.out.println("Remaining Masters and Servants: ");
-
-                //Display Masters and Servants
-                for (int i = 0; i < function.getMasters().size(); i++) {
-                    System.out.print("Master: " + function.getRemainingMasters().get(i) + " -> | Servant: " + function.getServant(i));
-                    if (function.getServant(i).next != null) {
-                        HeroicSpirit node = function.getServant(i);
-                        while (node.next != null) {
-                            System.out.print("  | " + node.name);
-                            node = node.next;
-                        }
-                        System.out.print("  | " + node.name);
-                    }
-                    System.out.println();
-                }
-
-                //Take user input between which master choice
-                System.out.println("Enter a number to choose a master, or 0 to quit: ");
-                targetedMaster = UserInput.getIntInput();
-                while (targetedMaster < 0 || targetedMaster > function.getMasters().size() || targetedMaster == 0) {
-                    if (targetedMaster == 0) {
-                        System.out.println("Exiting...");
-                        System.exit(0);
-                    }
-                    System.out.println("Invalid input. Please enter a number between 1 and " + function.getRemainingMasters().size() + ", or 0 to quit:");
-                    targetedMaster = UserInput.getIntInput();
-                }
-
-                //Check if that master has multiple servants
-                if (function.getServant(targetedMaster).next != null) {
-                    System.out.println("Choose a specific servant. ");
-
-                    //Display Servants
-                    HeroicSpirit node = function.getServant(targetedMaster);
-                    int count = 1;
-                    while (node.next != null) {
-                        System.out.print(count + ". " + node.name + " ");
-                        count++;
-                        node = node.next;
-                    }
-                    System.out.print(count + ". " + node.name);
-
-                    //Take user input for which servant to choose
-                    System.out.println("Enter a number to choose a servant, or 0 to quit: ");
-                    boolean wrongInput = true;
-                    int servantChoice = -1;
-                    while(wrongInput){
-                        try {
-                            servantChoice = UserInput.getIntInput();
-                            if(servantChoice == 0) {
-                                System.out.println("Exiting...");
-                                System.exit(0);
-                            }
-                            if (servantChoice < 0 || servantChoice > 7) {
-                                System.out.println("Invalid input. Please enter a number between 1 and 7, or 0 to exit.");
-                                function.newLine();
-                            }
-                            else{
-                                wrongInput = false;
-                            }
-                        }
-                        catch (NumberFormatException e) {
-                            System.out.println("That's not even a number -_- ... Please enter a number between 0 and 7.");
-                            function.newLine();
-                        }
-                    }
-                }
-                else{
-                    System.out.println("Targeting "+ function.getServant(targetedMaster));
-                }
-            }
-
-            //Bot's Turn
-            else{
-                Linked3
-            }
-        }
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    public Item drawItem(){
-        while(function.getItemQueue().size()<10) {
-            function.getItemQueue().enqueue(new Item("Random"));
-        }
-        return function.getItemQueue().dequeue();
-    }
+//    public void useItem(Master master, int masterID){
+//        //Show Your Hand
+//        master.displayItems();
+//        function.pause(1);
+//        function.newLine();
+//
+//        //Get random Items Object and Add Into Master's ArrayList<Items>
+//        System.out.println("Drawing Card...");
+//        function.newLine();
+//        master.masterItems.add(HolyGrailWar.itemFromDrawPile());
+//        function.pause(1);
+//
+//        //Master Chooses An Item
+//        while(isTrue) {
+//            //Shows New Item Name Into Master's ArrayList
+//            master.displayItems();
+//            System.out.println("Choose an action.");
+//            String itemChoice = UserInput.getInput();
+//
+//            if (Dictionary.itemDictionary.contains(itemChoice) && master.doesItemExists(itemChoice)) {
+//                Item removeThisItem = null;
+//                for (int i = 0; i < master.masterItems.size(); i++) {
+//                    if (Objects.equals(master.masterItems.get(i).itemName, itemChoice)) {
+//                        removeThisItem = master.masterItems.get(i);
+//                        break;
+//                    }
+//                }
+//                master.masterItems.remove(removeThisItem);
+//                isTrue = false;
+//            } else {
+//                System.out.println("Please Enter a Correct Item Name.");
+//                System.out.println();
+//            }
+//        }
+//        isTrue = true;
+//    }
 
     public void chooseAction(String action, HeroicSpirit targetedServant) {
-        if(Objects.equals(targetedServant.checkImmune(action), "not immune")) {
-            target=targetedServant;
-            attacker =HolyGrailWar.summonedServants.get(1);
+        if(targetedServant.checkImmune(action).equals("not immune")) {
             switch(action) {
                 case "npCharge": {
                     npCharge();

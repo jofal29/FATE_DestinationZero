@@ -32,4 +32,7 @@ public class Function {
     public Queue<Item> getItemQueue(){
         return HolyGrailWar.itemQueue;
     }
+    public HeroicSpirit getServant (Master master, int masterID){
+        return HolyGrailWar.masters.get(masterID).getServantList();
+    }
 }

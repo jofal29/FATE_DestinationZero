@@ -50,6 +50,7 @@ public class HolyGrailWar {
         System.out.println("- Stun vs Charm:");
         System.out.println("    Stun affects the master to be skipped.");
         System.out.println("    Charm affects a servant to be unusable.");
+        System.out.println("- If a servant uses a noble phantasm without having a np loaded, they will sacrifice their lives");
         System.out.println();
     }
 
@@ -64,7 +65,7 @@ public class HolyGrailWar {
             //0 = exit the program
             if (input.equals("0")) {
                 System.out.println("Aw alright :( Exiting Fate/Stay Night: Destination Zero...");
-                play.pause(2);
+                function.pause(2);
                 System.exit(0);
             }
 
@@ -100,7 +101,7 @@ public class HolyGrailWar {
         int numOfMaster = 1;
         for(int i=0; masters.size()<totalMasters; i++) {
             Master m = new Master(numOfMaster,servantsPer);
-            m.masterID_Number = numOfMaster;
+            m.setMasterID_Number(numOfMaster);
             masters.put(numOfMaster,m);
             remainingMasters.add(numOfMaster);
             numOfMaster++;
@@ -126,9 +127,9 @@ public class HolyGrailWar {
             System.out.println("Master " + masterNumber + ", Servant(s): ");
             for (int j = 0; j < numOfServants; j++) {
                 HeroicSpirit servant = throneOfHeroes.summonAny();
-                servant.masterID = masterNumber;
-                function.getMaster(masterNumber).servantList.add(servant);
-                System.out.print(servant.name + " | ");
+                servant.setMasterID(masterNumber);
+                function.getMaster(masterNumber).getServantList().add(servant);
+                System.out.print(servant.getName() + " | ");
             }
             masterNumber++;
         }
@@ -153,7 +154,7 @@ public class HolyGrailWar {
         int hand = 0;
         for(Integer masterNumber : masters.keySet()) {
             while (hand < 3) {
-                function.getMaster(masterNumber).getMasterItems().add(action.drawItem());
+                function.getMaster(masterNumber).getMasterItems().add(itemFromDrawPile());
                 hand++;
             }
         }
@@ -166,11 +167,11 @@ public class HolyGrailWar {
         // iterate through the master objects, O(1) because only one should be left.
         for (Master master : masters.values()) {
             System.out.println("-----------------------------------------");
-            System.out.println("Master ID#" + master.masterID_Number + " has " + master.getServantList().size() + " remaining servants.");
+            System.out.println("Master ID#" + master.getMasterID_Number() + " has " + master.getServantList().size() + " remaining servants.");
 
             // iterate through the linked list of heroic spirits
             for (HeroicSpirit servant : master.getServantList()) {
-                System.out.println(servant.name + " has " + servant.hearts + " left.");
+                System.out.println(servant.getName() + " has " + servant.getHearts() + " left.");
             }
         }
 
@@ -185,11 +186,11 @@ public class HolyGrailWar {
     public void winner() {
         for (Master master : masters.values()) {
             System.out.println("-----------------------------------------");
-            System.out.println("Master ID#" + master.masterID_Number + " | and ");
+            System.out.println("Master ID#" + master.getMasterID_Number() + " | and ");
 
             // iterate through the linked list of heroic spirits
             for (HeroicSpirit servant : master.getServantList()) {
-                System.out.println(servant.name + " | ");
+                System.out.println(servant.getName() + " | ");
             }
             System.out.print(" are the Winner!");
         }
@@ -211,5 +212,12 @@ public class HolyGrailWar {
         } else {
             return "Play Again";
         }
+    }
+
+    public static Item itemFromDrawPile(){
+        while(itemQueue.size()<10) {
+            itemQueue.enqueue(new Item("Random"));
+        }
+        return itemQueue.dequeue();
     }
 }

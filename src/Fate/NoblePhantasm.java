@@ -7,14 +7,7 @@ public class NoblePhantasm {
     //Attributes
     String name;
     int ongoing = 0;
-    private HeroicSpirit user;
-    private HeroicSpirit targeted;
     Effect servantDeath = new Effect();
-
-    public NoblePhantasm(HeroicSpirit focusServant, HeroicSpirit targetServant) {
-        this.user = focusServant;
-        this.targeted = targetServant;
-    }
 
     public NoblePhantasm() {
     }
@@ -76,139 +69,129 @@ public class NoblePhantasm {
     public void assignNPs(String n, HeroicSpirit h) {
         switch(n) {
             case "Achilles":{
-                h.noble_Phantasm="1NP:Eliminate One || 2NP(Required):Protect self and teammates for one turn from NPs";
-                h.npRequired=0;
+                h.setNoble_Phantasm("1NP:Eliminate One || 2NP(Required):Protect self and teammates for one turn from NPs");
+                h.setNpRequired(1);
             }	break;
             case "Arash":{
-                h.noble_Phantasm="1NP:Choose a master. Elimate all servants on their deck then discard Arash";
-                h.npRequired=1;
+                h.setNoble_Phantasm("1NP:Choose a master. Elimate all servants on their deck then discard Arash");
+                h.setNpRequired(1);
             }	break;
             case "Atalante":{
-                h.noble_Phantasm="1NP:Eliminate One Servant From Each Master then discard Atalante";
-                h.npRequired=1;
+                h.setNoble_Phantasm("1NP:Eliminate One Servant From Each Master then discard Atalante");
+                h.setNpRequired(1);
             }	break;
             case "Artoria":{
-                h.noble_Phantasm="2NP:Eliminate All Servants From All Enemy Masters";
-                h.npRequired=2;
+                h.setNoble_Phantasm("2NP:Eliminate All Servants From All Enemy Masters");
+                h.setNpRequired(2);
             }	break;
             case "Cu Chulainn":{
-                h.noble_Phantasm="(NP Required) Eliminate One";
-                h.npRequired=1;
+                h.setNoble_Phantasm("(NP Required) Eliminate One");
+                h.setNpRequired(1);
             }	break;
             case "Emiya":{
-                h.noble_Phantasm="";
+                h.setNoble_Phantasm("");
             }	break;
             case "Euryale":{
-                h.noble_Phantasm="";
+                h.setNoble_Phantasm("");
             }	break;
             case "Heracles":{
-                h.noble_Phantasm="";
-                h.npRequired=1;
+                h.setNoble_Phantasm("");
+                h.setNpRequired(1);
             }	break;
             case "Jason":{
-                h.noble_Phantasm="";
+                h.setNoble_Phantasm("");
             }	break;
             case "Kama":{
-                h.noble_Phantasm="";
+                h.setNoble_Phantasm("");
             }	break;
             case "Nitocris":{
-                h.noble_Phantasm="1NP(Required):Repeat Master's Turn||2NP(Required):Eliminate all king servants except Nitocris and Ozymandias.";
+                h.setNoble_Phantasm("1NP(Required):Repeat Master's Turn||2NP(Required):Eliminate all king servants except Nitocris and Ozymandias.");
             }	break;
             case "William Shakespeare":{
-                h.noble_Phantasm="Disable an enemy servant's noble phantasm.";
+                h.setNoble_Phantasm("Disable an enemy servant's noble phantasm.");
             }	break;
             default:
                 System.out.println("None");
         }
     }
-    public void activate(String npName) {
 
-        if(this.user.npSealed=="Disabled") {
-            System.out.println("Noble Phantasm Disabled. "+this.user.getName()+" cannot use NP.");
+    public void activate(HeroicSpirit servant) {
+
+        //Checks if the servant will sacrifice themselves.
+        if(servant.getNpHeld()==0 && servant.getNpRequired()==0)
+        {
+            servant.selfSacrifice();
         }
-        else {
-            if(this.user.npHeld==0 && this.user.npRequired==0)
-            {
-                this.user.selfSacrifice();
-            }
-            else {}
-            if(this.user.npHeld==0 && this.user.npRequired>0)
-            {System.out.println(this.user.getName()+" cannot use NP. Need "+(this.user.npRequired-this.user.npHeld)+" more.");}
-            else {
-                if(this.targeted.npProtection>0) {
-                    System.out.println(this.targeted.getName()+" cannot be targeted for NP. (-1 NP Protection).");
-                }
-                else {
-                    System.out.println(this.user.getName()+" uses ");
-                    System.out.println("*****************************************************************************");
-                    System.out.println("*                                                                           *");
-                    System.out.println("*                                                                           *");
 
+        //Switch Case, activates the respected method according to the servant's name
+        System.out.println(servant.getName()+" uses ");
+        System.out.println("*****************************************************************************");
+        System.out.println("*                                                                           *");
+        System.out.println("*                                                                           *");
 
-                    switch(npName) {
-                        case "Achilles":{
-                            achillesNP();
-                        }	break;
-                        case "Arash":{
-                            arashNP();
-                        }	break;
-                        case "Atalante":{
-                            atalanteNP();
-                        }	break;
-                        case "Artoria":{
-                            artoriaNP();
-                            //check.pause();
-                        }	break;
-                        case "Emiya":{
-                            emiyaNP();
-                        }	break;
-                        case "Euryale":{
-                            euryaleNP();
-                        }	break;
-                        case "Heracles":{
-                            heraclesNP();
-                        }	break;
-                        case "Jason":{
-                            jasonNP();
-                        }	break;
-                        case "Kama":{
-                            kamaNP();
-                        }	break;
-                        case "Nitocris":{
-                            nitocrisNP();
-                        }	break;
-                        case "William Shakespeare":{
-                            williamShakespeareNP();
-                        }	break;
-                        default:{
-                            System.out.println("				   None");}
-                    }
-                    checkSelfSacrifice();
-                    System.out.println("*                                                                           *");
-                    System.out.println("*                                                                           *");
-                    System.out.println("*****************************************************************************");
-                }}
+        switch(servant.getName()) {
+            case "Achilles":{
+                achillesNP(servant);
+            }	break;
+            case "Arash":{
+                arashNP(servant);
+            }	break;
+            case "Atalante":{
+                atalanteNP(servant);
+            }	break;
+            case "Artoria":{
+                artoriaNP(servant);
+            }	break;
+            case "Emiya":{
+                emiyaNP(servant);
+            }	break;
+            case "Euryale":{
+                euryaleNP(servant);
+            }	break;
+            case "Heracles":{
+                heraclesNP(servant);
+            }	break;
+            case "Jason":{
+                jasonNP(servant);
+            }	break;
+            case "Kama":{
+                kamaNP(servant);
+            }	break;
+            case "Nitocris":{
+                nitocrisNP(servant);
+            }	break;
+            case "William Shakespeare":{
+                williamShakespeareNP(servant);
+            }	break;
+            default:{
+                System.out.println("				   None");}
         }
+        checkSelfSacrifice(servant);
+        System.out.println("*                                                                           *");
+        System.out.println("*                                                                           *");
+        System.out.println("*****************************************************************************");
     }
+
     public void override(String npName, HeroicSpirit hes) {
-        this.user=hes;
         switch(npName) {
             case "Arash":{
-                arashNP();
+                arashNP(hes);
             }	break;
             default:
                 System.out.println("None");
         }
     }
-    private void checkSelfSacrifice() {
-        if(this.user.sacrifice==true) {
-            this.user.takeLife();
-            System.out.println(this.user.getName()+" has used their spirit origin to use their NP. Fading away...");
+
+    private void checkSelfSacrifice(HeroicSpirit heroicSpirit) {
+        if(heroicSpirit.isSacrifice()) {
+            heroicSpirit.takeLife();
+            System.out.println(heroicSpirit.getName()+" has used their spirit origin to use their NP. Fading away...");
             check.playAnalysis();
         }
     }
+
     //Library of Servants' Noble Phantasms=======================================================================================================================================
-    private void achillesNP() {
+    private void achillesNP(HeroicSpirit servant) {
         int randomNP = new Random().nextBoolean() ? 1 : 2;
         if(this.user.npHeld==0) {
             randomNP=1;
@@ -244,7 +227,7 @@ public class NoblePhantasm {
             default:
         }
     }
-    private void arashNP() {
+    private void arashNP(HeroicSpirit servant) {
         System.out.println("			"+"Noble Phantasm... STELLAAAAA!!");
         searchFor.excludingSelf("Master","AnyMaster","Arash");
         int numTimes = searchFor.temp.size();
@@ -258,25 +241,22 @@ public class NoblePhantasm {
 
         this.user.selfSacrifice();
     }
-    private void artoriaNP() {
-        if(this.user.npHeld<2)
-        {
-            System.out.println("Insufficient Mana. Need "+(2-this.user.npHeld)+" more NP card.");
-        }else {
+    private void artoriaNP(HeroicSpirit servant) {
+
+        //NP Required = 2
             System.out.println("			  "+"Noble Phantasm... EXCALIBUR!!");
-            {
-                searchFor.excludingSelf("Any", "Any", "Artoria");
-                for(int i=0; i<searchFor.temp.size(); i++)
-                    searchFor.servantChoice();
-                hitTarget("takeLife");
-                check.playAnalysis();
+            searchFor.excludingSelf("Any", "Any", "Artoria");
+            for(int i=0; i<searchFor.temp.size(); i++) {
+                searchFor.servantChoice();
             }
-            this.user.npHeld--;
-            this.user.npHeld--;
+            hitTarget("takeLife");
+            check.playAnalysis();
+
+            //Removes NPs Loaded
+            servant.setNpHeld(servant.getNpHeld()-servant.getNpRequired());
             searchFor.clearList();
-        }
     }
-    private void atalanteNP() {
+    private void atalanteNP(HeroicSpirit servant) {
         System.out.println("  "+"Noble Phantasm...  Phoebus Catastrophe:Complaint Message on the Arrow!!");
         searchFor.excludingSelf("Master","EachMaster","Atalante");
         if(this.user.npSealed=="Enabled")
@@ -299,7 +279,7 @@ public class NoblePhantasm {
     }
 
 
-    private void heraclesNP() {
+    private void heraclesNP(HeroicSpirit servant) {
         System.out.println("	Noble Phantasm... Nine Lives: Shooting the Hundred Heads");
         searchFor.excludingSelf("Any","Any","Heracles");
         searchFor.servantChoice();
@@ -308,7 +288,7 @@ public class NoblePhantasm {
         searchFor.clearList();
         this.user.npHeld--;
     }
-    private void emiyaNP() {
+    private void emiyaNP(HeroicSpirit servant) {
         System.out.println("	 "+"I am the bone of my sword... Unlimited BladeWorks");
         int initialNum = HolyGrailWar.getSummonedServants().size();
         for(int i=0; i<3; i++) {
@@ -327,7 +307,7 @@ public class NoblePhantasm {
         }
         this.user.npHeld--;
     }
-    private void euryaleNP() {
+    private void euryaleNP(HeroicSpirit servant) {
         System.out.println("			 "+"==Noble Phantasm==");
         searchFor.excludingSelf("Any","Any","Euryale");
         searchFor.servantChoice();
@@ -336,7 +316,7 @@ public class NoblePhantasm {
         searchFor.clearList();
         this.user.npHeld--;
     }
-    private void jasonNP() {
+    private void jasonNP(HeroicSpirit servant) {
         System.out.println("			 "+"==Astrapste Argo==");
         System.out.println("		    	"+"==COME MY ARGONAUTS==");
 
@@ -380,7 +360,7 @@ public class NoblePhantasm {
 //        }
         this.user.npHeld--;
     }
-    private void kamaNP() {
+    private void kamaNP(HeroicSpirit servant) {
         System.out.println("				"+"--Noble Phantasm.--");
         searchFor.includingSelf("Gender", "M");
         int numTimes = searchFor.temp.size();
@@ -392,7 +372,7 @@ public class NoblePhantasm {
         searchFor.clearList();
         this.user.npHeld--;
     }
-    private void nitocrisNP() {
+    private void nitocrisNP(HeroicSpirit servant) {
         int randomNP = new Random().nextBoolean() ? 1 : 2;
         switch(randomNP) {
             case 1:{
@@ -428,7 +408,7 @@ public class NoblePhantasm {
             }break;
             default:{}}
     }
-    private void williamShakespeareNP() {
+    private void williamShakespeareNP(HeroicSpirit servant) {
         System.out.println("				 "+"==Noble Phantasm==");
 
         searchFor.excludingSelf("Any","Any","William Shakespeare");

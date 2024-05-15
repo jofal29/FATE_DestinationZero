@@ -1,7 +1,6 @@
 package Fate;
 
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.Random;
 
 public class Play {
@@ -21,7 +20,7 @@ public class Play {
     public void playGame(){
         while (HolyGrailWar.masters.size()>1) {
             gameTurn();
-            pause(2);
+            function.pause(2);
         }
     }
 
@@ -31,20 +30,19 @@ public class Play {
 
         //Iterate through the array of master IDs
         for(int i=0; i<HolyGrailWar.remainingMasters.size();i++) {
-            this.currentMasterTurn = HolyGrailWar.remainingMasters.get(i);
+            currentMasterTurn = HolyGrailWar.remainingMasters.get(i);
 
             //Checks if the master has been eliminated, if so, it skips onto the next master ID
             if(!HolyGrailWar.deceased.contains(currentMasterTurn)){
 
-                //Pre-Checklist
-                checkOngoing(getServant(currentMasterTurn));
+                //Print out which master's turn it is
                 printStatement_whichMaster(currentMasterTurn);
 
                 //Decrements Any NP Effects That Are On The Master By One
-                npCheck(getMaster(currentMasterTurn));
+                npCheck(function.getMaster(currentMasterTurn));
 
                 //Check if master is stunned
-                if(getMaster(currentMasterTurn).turnsFrozen==0)
+                if(function.getMaster(currentMasterTurn).getTurnsFrozen()==0)
                 {
                     //Checks if the master is the player, if so, it's the player's turn.
                     if(currentMasterTurn == 1){
@@ -142,94 +140,6 @@ public class Play {
         }
     }
 
-    private void checkOngoing(HeroicSpirit hs) {
-        if (hs.ongoingCurses != 0) {
-        hs.curses = hs.curses + hs.ongoingCurses;
-        }
-
-        if (hs.ongoingDefense == 1) {
-            hs.defense++;
-        }
-        if (hs.ongoingDefense == -1) {
-            hs.defense--;
-        }
-
-        if (hs.ongoingFrozen == 1) {
-            hs.turnsFrozen++;
-        }
-
-        if (hs.ongoingHearts == 1) {
-            hs.hearts++;
-        }
-        if (hs.ongoingHearts == -1) {
-            hs.hearts--;
-        }
-
-        if (hs.ongoingLives == 1) {
-            hs.ongoingLives++;
-        }
-
-        if (hs.ongoingMaxHealth == 1) {
-            hs.maxHealth++;
-        }
-        if (hs.ongoingMaxHealth == -1) {
-            hs.maxHealth--;
-        }
-
-        if (hs.ongoingNpCharge > 0) {
-            hs.ongoingNpCharge--;
-        }
-        if (hs.ongoingNpSeals > 0) {
-            hs.npSeals = hs.npSeals + hs.ongoingNpSeals;
-            hs.ongoingNpSeals = 0;
-        }}
-
-    private void endOfMasterTurn(HeroicSpirit hs) {
-        if (hs != null) {
-
-            if (hs.npSeals > 0) {
-                hs.npSeals--;
-            }
-            if (hs.npSeals < 0) {
-                hs.npSeals = 0;
-            }
-
-            if (hs.turnsFrozen > 0) {
-                hs.turnsFrozen--;
-            }
-            if (hs.turnsFrozen < 0) {
-                hs.turnsFrozen = 0;
-            }
-        }
-    }
-
-    private void npCheck(Master m){
-        while (nodeCursor != null){
-            nodeCursor = getServant(m.masterID_Number);
-            if(getServant(nodeCursor.masterID).npProtection>0)
-            {
-                getServant(nodeCursor.masterID).npProtection--;
-            }
-            if(getServant(nodeCursor.masterID).npProtection<0)
-            {
-                getServant(nodeCursor.masterID).npProtection=0;
-            }
-            nodeCursor = nodeCursor.next;
-        }
-    }
-
-    private String botTurn(Master m) {
-        m.myActions.add(HolyGrailWar.drawItem());
-        int randomChoice = rand.nextInt(m.myActions.size());
-
-        Action removeThisAction = m.myActions.get(randomChoice);
-        String itemChoice = removeThisAction.itemName;
-
-        m.myActions.remove(removeThisAction);
-
-        return itemChoice;
-    }
-
     private HeroicSpirit chooseServants(int masterFocus) {
 
         if(masterFocus==1){
@@ -265,7 +175,6 @@ public class Play {
         }
     }
 
-
     private HeroicSpirit randomServant() {
         int masters = 0;
         for(int i=0; i<getRemainingMasters().size(); i++) {
@@ -276,6 +185,7 @@ public class Play {
         int masterChoice = rand.nextInt(masters);
         return getServant(masterChoice);
     }
+
     private void printStatement_whichMaster(int masterT) {
         System.out.println("		  	       *Master #"+masterT+"'s Turn:*");
     }
