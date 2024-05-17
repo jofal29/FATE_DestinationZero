@@ -33,6 +33,6 @@ public class Function {
         return HolyGrailWar.itemQueue;
     }
     public HeroicSpirit getServant (Master master, int masterID){
-        return HolyGrailWar.masters.get(masterID).getServantList();
+        return HolyGrailWar.masters.get(masterID).getServantList().get(masterID);
     }
 }

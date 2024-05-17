@@ -55,57 +55,79 @@ public class Skill {
             default:{firstCheck="None";}
         }}
 
-    private void arashSkill(HeroicSpirit h) {
-        h.skill="If eliminated and has 2 np charges, activate NP before discarding(Ongoing)";
-        if(h.skillSealed=="Enabled"){}
-        if(h.skill=="Disabled"){
-            System.out.println(h.skill+"[DISABLED]");}
-        if(h.skillSealed=="Protected"){
-            System.out.println("Skill cannot be disabled.");}
+    private void arashSkill(HeroicSpirit heroicSpirit) {
+        heroicSpirit.setSkill("If eliminated and has 2 np charges, activate NP before discarding(Ongoing)");
+        if(heroicSpirit.getSkillSealed().equals("Enabled")){
+            //Do nothing
+        }
+        if(heroicSpirit.getSkill().equals("Disabled")){
+            System.out.println(heroicSpirit.getSkill()+"[DISABLED]");
+        }
+        if(heroicSpirit.getSkillSealed().equals("Protected")){
+            System.out.println("Skill cannot be disabled.");
+        }
     }
-    private void atalanteSkill(HeroicSpirit h) {
-        h.skill="Cannot Target or Elimate Children(Ongoing)";
-        if(h.skillSealed=="Enabled"){}
-        if(h.skill=="Disabled"){
-            System.out.println(h.skill+"[DISABLED]");}
-        if(h.skillSealed=="Protected"){
-            System.out.println("Skill cannot be disabled.");}
+    private void atalanteSkill(HeroicSpirit heroicSpirit) {
+        heroicSpirit.setSkill("Cannot Target or Elimate Children(Ongoing)");
+        if(heroicSpirit.getSkillSealed().equals("Enabled")){}
+        if(heroicSpirit.getSkill().equals("Disabled")){
+            System.out.println(heroicSpirit.getSkill()+"[DISABLED]");
+        }
+        if(heroicSpirit.getSkillSealed().equals("Protected")){
+            System.out.println("Skill cannot be disabled.");
+        }
     }
-    private void nitocrisSkill(HeroicSpirit h) {
-        h.skill="2 NP Charges=1NP(Ongoing)";
-        if(h.skillSealed=="Enabled"){
-            h.npMaxCharges=2;}
-        if(h.skill=="Disabled"){
-            h.npMaxCharges=3;
-            System.out.println(h.skill+"[DISABLED]");}
-        if(h.skillSealed=="Protected"){
-            System.out.println("Skill cannot be disabled.");}
+
+    private void nitocrisSkill(HeroicSpirit heroicSpirit) {
+        heroicSpirit.setSkill("2 NP Charges=1NP(Ongoing)");
+        if(heroicSpirit.getSkillSealed().equals("Enabled")){
+            heroicSpirit.setNpMaxCharges(2);
+        }
+        if(heroicSpirit.getSkill().equals("Disabled")){
+            heroicSpirit.setNpMaxCharges(3);
+            System.out.println(heroicSpirit.getSkill()+"[DISABLED]");
+        }
+        if(heroicSpirit.getSkillSealed().equals("Protected")){
+            System.out.println("Skill cannot be disabled.");
+        }
     }
-    private void cuChulainnSkill(HeroicSpirit h) {
-        h.skill="+1 Guts (Ongoing)";
-        if(h.skillSealed=="Enabled"){
-            h.lives++;}
-        if(h.skill=="Disabled"){
-            h.lives--;
-            System.out.println(h.skill+"[DISABLED]");
-            h.checkHealth();}
-        if(h.skillSealed=="Protected"){
-            System.out.println("Skill cannot be disabled.");}
+
+    private void cuChulainnSkill(HeroicSpirit heroicSpirit) {
+        heroicSpirit.setSkill("+1 Guts (Ongoing)");
+        if(heroicSpirit.getSkillSealed().equals("Enabled")){
+            heroicSpirit.setLives(heroicSpirit.getLives() + 1);
+        }
+        if(heroicSpirit.getSkill().equals("Disabled")){
+            heroicSpirit.setLives(heroicSpirit.getLives() - 1);
+            System.out.println(heroicSpirit.getSkill()+"[DISABLED]");
+            heroicSpirit.checkHealth(heroicSpirit);
+        }
+        if(heroicSpirit.getSkillSealed().equals("Protected")){
+            System.out.println("Skill cannot be disabled.");
+        }
     }
-    private void achillesSkill(HeroicSpirit h) {
-        h.skill="+1 Max Health (Ongoing)";
-        if(h.skillSealed=="Enabled"){
-            h.maxHealth++;
-            h.hearts=h.maxHealth;}
-        if(h.skillSealed=="Disabled"){
-            h.maxHealth--;
-            System.out.println(h.skill+"[DISABLED]");
-            h.checkHealth();}
-        if(h.skillSealed=="Protected"){
-            System.out.println("Skill cannot be disabled.");}
+
+    private void achillesSkill(HeroicSpirit heroicSpirit) {
+        heroicSpirit.setSkill("+1 Max Health (Ongoing)");
+        if(heroicSpirit.getSkillSealed().equals("Enabled")){
+            heroicSpirit.setMaxHealth(heroicSpirit.getMaxHealth() + 1);
+            heroicSpirit.setHearts(heroicSpirit.getMaxHealth());
+        }
+        if(heroicSpirit.getSkillSealed().equals("Disabled")){
+            heroicSpirit.setMaxHealth(heroicSpirit.getMaxHealth() - 1);
+            System.out.println(heroicSpirit.getSkill()+"[DISABLED]");
+            heroicSpirit.checkHealth(heroicSpirit);
+        }
+        if(heroicSpirit.getSkillSealed().equals("Protected")){
+            System.out.println("Skill cannot be disabled.");
+        }
     }
-    private void heraclesSkill(HeroicSpirit h) {
-        h.skill="12 Lives (Cannot Deactivate)";
-        h.lives=12; h.maxHealth=1; h.originalMaxHealth=1; h.hearts=1;
+
+    private void heraclesSkill(HeroicSpirit heroicSpirit) {
+        heroicSpirit.setSkill("12 Lives (Cannot Deactivate)");
+        heroicSpirit.setLives(12);
+        heroicSpirit.setMaxHealth(1);
+        heroicSpirit.setOriginalMaxHealth(1);
+        heroicSpirit.setHearts(1);
     }
 }

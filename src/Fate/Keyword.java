@@ -1,16 +1,17 @@
+
 package Fate;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
 public class Keyword {
     public ArrayList<HeroicSpirit> temp;
-    HeroicSpirit assignedServant = new HeroicSpirit();
-    HeroicSpirit npUser = new HeroicSpirit();
-    Play action = new Play();
     int mast;
     boolean status;
+
+    Random rand = new Random();
 
     public Keyword() {}
 
@@ -18,12 +19,12 @@ public class Keyword {
 //    public void includingSelf(String attribute, String keyword ) {}
 
     //Excluding Self
-    public void excludingSelf(String attribute, String keyword, String servantName) {
+    public void targetServants(String attribute, String keyword) {
         mast = 0;
         this.temp = new ArrayList<HeroicSpirit>();
         temp.clear();
 
-        // Use a more concise way to iterate over the servants
+        //A more concise way to iterate over the servants
         for (Master master : HolyGrailWar.masters.values()) {
             for (HeroicSpirit servant : master.getServantList()) {
                 switch (attribute) {
@@ -54,19 +55,35 @@ public class Keyword {
                         break;
                     case "Master":
                         if (keyword.equals("EachMaster")) {
-                            // ...
-                        } else if (keyword.equals("AnyMaster")) {
-                            // ...
-                        } else {
-                            // ...
+                            mast = servant.getMasterID();
+                            for(Master masterID : HolyGrailWar.masters.values()){
+                                if(mast != masterID.getMasterID_Number()){
+                                    temp.add(masterID.randomOwnServant());
+                                }
+                            }
+                        }
+                        if (keyword.equals("AnyMaster")) {
+                            mast = servant.getMasterID();
+                            while(mast == servant.getMasterID() || !HolyGrailWar.masters.containsKey(mast)){
+                                mast = rand.nextInt(HolyGrailWar.masters.size());
+                            }
+                            System.out.println("Random Master: "+mast);
+                            temp.addAll(HolyGrailWar.masters.get(mast).getServantList());
+                        }
+                        else {
+                            temp.addAll(HolyGrailWar.masters.get(Integer.parseInt(keyword)).getServantList());
                         }
                         break;
                     case "Any":
                         temp.addAll(getAllServants());
                         break;
                     case "Extra":
-                        if (servant.getExtraTraits().contains(keyword)) {
-                            temp.add(servant);
+                        for(Master masterID : HolyGrailWar.masters.values()){
+                            for(HeroicSpirit heroicSpirit : masterID.getServantList()){
+                                if(heroicSpirit.getExtraTraits().contains(keyword)){
+                                    temp.add(heroicSpirit);
+                                }
+                            }
                         }
                         break;
                     default:
@@ -86,27 +103,17 @@ public class Keyword {
         return allServants;
     }
 
-    public void servantChoice() {
+    public HeroicSpirit servantChoice() {
         if(temp.size()<=0) {
             System.out.println("No more enemy servants under that attribute");
+            return null;
         }
         else {
-            Random rando = new Random();
-            int randomAllignedServant = rando.nextInt(temp.size());
-            assignedServant = temp.get(randomAllignedServant);
+            int randomAllignedServant = rand.nextInt(temp.size());
+            HeroicSpirit tempServant = temp.get(randomAllignedServant);
             temp.remove(randomAllignedServant);
-            System.out.println("Servant Choice: " + assignedServant.getName());
-        }
-    }
-
-    public void removeServant(String rs) {
-        removeSelf(rs);
-        if(temp.size()<=0) {
-            this.status = false;
-        }
-
-        else {
-            this.status = true;
+            System.out.println("Servant Choice: " + tempServant.getName());
+            return tempServant;
         }
     }
 
@@ -121,48 +128,32 @@ public class Keyword {
         return this.status;
     }
 
-    public void selfAndTeammates(int mast) {
-        this.temp = new ArrayList<HeroicSpirit>();
-        temp.clear();
-       // for(int i=0; i < HolyGrailWar.totalServants().size();i++)
-       // {
-        //    if(HolyGrailWar.totalServants().get(i).master==mast) {
-                assignedServant=(HolyGrailWar.summonedServants.get(mast));
-                temp.add(assignedServant);
-         //   }
-       // }
-    }
-
     public void removeType(String attribute) {
-        for(int i=0;i<temp.size();i++) {
-            for(int u=0; u<temp.get(i).extraTraits.size();u++) {
-                if(temp.get(i).extraTraits.contains(attribute)) {
-                    temp.remove(i);
-                }
+        for(HeroicSpirit heroicSpirit : temp) {
+            if(heroicSpirit.getExtraTraits().contains(attribute)){
+                temp.remove(heroicSpirit);
             }
         }
     }
 
-    public void removeTeammates(int mas) {
-        for (int i=0;i<temp.size();i++) {
-            if(temp.get(i).masterID ==mas)
-            {
-                System.out.println("NP USER TEAMMMATE REMOVED: "+temp.get(i).getName());
-                temp.remove(i);
+    //Removes a specific servant's name and servants from same side.
+    //Enter a random string if it's just teammmates or -1 if not a specific master
+    //Learned about iterator when researching how to resolve/avoid a concurrent modification.
+    //Source:https://rollbar.com/blog/java-concurrentmodificationexception/#:~:text=To%20avoid%20the%20ConcurrentModificationException%20in,degrade%20performance%20for%20larger%20ones.
+    public void removeSelfTeammatesOrSpecificName(String servantName, int masterID) {
+        Iterator<HeroicSpirit> iterator = temp.iterator();
+        while (iterator.hasNext()) {
+            HeroicSpirit heroicSpirit = iterator.next();
+            if (heroicSpirit.getMasterID() == masterID || heroicSpirit.getName().equals(servantName)) {
+                iterator.remove();
             }
-            else {}
         }
     }
 
-    public void removeSelf(String off)
-    {
-        for(int i=0; i < temp.size(); i++) {
-            if(temp.get(i).getName() == off) {
-                mast = temp.get(i).masterID;
-                System.out.println("NP USER REMOVED: "+temp.get(i).getName());
-                temp.remove(temp.get(i));
-            }
-            else {}
-        }
+
+    public void targetSelfAndTeammates(int masterID){
+        temp.clear();
+        temp.addAll(HolyGrailWar.masters.get(masterID).getServantList());
     }
 }
+

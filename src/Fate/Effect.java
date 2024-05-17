@@ -1,7 +1,7 @@
 package Fate;
 
 public class Effect {
-    Action remove = new Action("Random");
+    Action remove = new Action();
     Play insurance = new Play();
 
     Effect(){}
@@ -22,16 +22,15 @@ public class Effect {
         }
     }
     private void arashSkillDeathEffect(String deathName) {
-        if(HolyGrailWar.deceased.get(deathName).npSealed=="Enabled"){
-            if(HolyGrailWar.deceased.get(deathName).npCharge==2) {
-                if(HolyGrailWar.deceased.get(deathName).sacrifice)
+        if(HolyGrailWar.deceasedServants.get(deathName).getNP_Status().equals("Enabled")){
+            if(HolyGrailWar.deceasedServants.get(deathName).getNpCharge()==2) {
+                if(HolyGrailWar.deceasedServants.get(deathName).isSacrifice())
                 {}else {
                     System.out.println("But with his last breath & 2np charges, he activates his");
-                    HolyGrailWar.deceased.get(deathName).npCharge=0;
-                    HolyGrailWar.deceased.get(deathName).npHeld++;
+                    HolyGrailWar.deceasedServants.get(deathName).setNpCharge(0);
+                    HolyGrailWar.deceasedServants.get(deathName).addNp();
                     NoblePhantasm np = new NoblePhantasm();
-                    np.override(deathName,HolyGrailWar.deceased.get(deathName));
-                    //insurance.pause();
+                    np.override(deathName,HolyGrailWar.deceasedServants.get(deathName));
                 }
 
             }
@@ -39,26 +38,18 @@ public class Effect {
         }
 
     }
-
     private void williamShakespeareDeathEffect(String deathName) {
-        for(Integer key : HolyGrailWar.summonedServants.keySet()) {
-            if (HolyGrailWar.summonedServants.get(key).restrictions.contains(deathName)) {
-                HolyGrailWar.summonedServants.get(key).npSealed = "Enabled";
-                System.out.println("NP Seal from " + deathName + " has been removed from " + HolyGrailWar.summonedServants.get(key));
-                HolyGrailWar.summonedServants.get(key).restrictions.remove(deathName);
-                insurance.checkLives(HolyGrailWar.summonedServants.get(key));
+        for(Master master : HolyGrailWar.masters.values())
+        {
+            for(HeroicSpirit heroicSpirit : master.getServantList()){
+                if(heroicSpirit.getRestrictions().contains(deathName)){
+                    heroicSpirit.setNP_Status("Enabled");
+                    System.out.println("NP Seal from " + deathName + " has been removed from " + heroicSpirit.getName());
+                    heroicSpirit.getRestrictions().remove(deathName);
+                    heroicSpirit.checkHealth(heroicSpirit);
+                }
             }
         }
-//        for(int i=0; i<HolyGrailWar.totalServants().size();i++) {
-//            for(int size=0; size<HolyGrailWar.totalServants().get(i).restrictions.size();size++) {
-//                if(HolyGrailWar.totalServants().get(i).restrictions.get(size)==deathName) {
-//                    HolyGrailWar.totalServants().get(i).npSealed="Enabled";
-//                    System.out.println("NP Seal from "+deathName+" has been removed from "+HolyGrailWar.totalServants().get(i).getName());
-//                    HolyGrailWar.totalServants().get(i).restrictions.remove(deathName);
-//                    insurance.checkLives(HolyGrailWar.totalServants().get(i));
-//                }
-//            }
-//        }
     }
 
 }

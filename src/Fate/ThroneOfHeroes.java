@@ -174,7 +174,7 @@ public class ThroneOfHeroes {
 
         for(String name : children)
         {
-                child.extraTraits.add("Child");
+                child.getExtraTraits().add("Child");
         }
     }
     private void addToDivine(HeroicSpirit divinity) {
@@ -188,7 +188,7 @@ public class ThroneOfHeroes {
 
         for(String name : divine)
         {
-                divinity.extraTraits.add("Divine");
+                divinity.getExtraTraits().add("Divine");
         }
     }
     private void addToRoundTable(HeroicSpirit knight) {
@@ -197,7 +197,7 @@ public class ThroneOfHeroes {
         this.kotrt.add("Artoria");
         for(String name : kotrt)
         {
-                knight.extraTraits.add("Round Table");
+                knight.getExtraTraits().add("Round Table");
         }
     }
     private void addToKings(HeroicSpirit king) {
@@ -210,7 +210,7 @@ public class ThroneOfHeroes {
 
         for(String name : kings)
         {
-                king.extraTraits.add("King");
+                king.getExtraTraits().add("King");
         }
     }
     private void addToGreeks(HeroicSpirit greek) {
@@ -225,7 +225,7 @@ public class ThroneOfHeroes {
 
         for(String name : greeks)
         {
-                greek.extraTraits.add("Greek");
+                greek.getExtraTraits().add("Greek");
         }
     }
     private void addToArgonauts(HeroicSpirit argo) {
@@ -238,7 +238,7 @@ public class ThroneOfHeroes {
 
         for(String name : argonauts)
         {
-                argo.extraTraits.add("Argonaut");
+                argo.getExtraTraits().add("Argonaut");
         }
     }
 

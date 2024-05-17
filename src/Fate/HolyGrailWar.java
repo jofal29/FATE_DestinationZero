@@ -12,8 +12,10 @@ public class HolyGrailWar {
 
     //public static ConcurrentHashMap<Integer, LinkedList<HeroicSpirit>> summonedServants = new ConcurrentHashMap<>();
     public static ConcurrentHashMap<Integer, Master> masters = new ConcurrentHashMap<>();
-    public static final Hashtable<String, HeroicSpirit> deceased = new Hashtable<>();
+    public static final Hashtable<String, HeroicSpirit> deceasedServants = new Hashtable<>();
+    public static ArrayList<HeroicSpirit> interimSpirits = new ArrayList<>();
     public static ArrayList<Integer> remainingMasters = new ArrayList<>();
+    public static final HashSet<Integer> deceasedMasters = new HashSet<>();
 
     public static final HashSet<String> servantsWithDeathEffects = new HashSet<>();
 
@@ -46,11 +48,16 @@ public class HolyGrailWar {
         System.out.println("- Explanation of some items:");
         System.out.println("    Curse: Removes 1 Max Health from a servant.");
         System.out.println("    Shield: Can only be applied to own servants.");
-        System.out.println("    Heal: Can only health to max health.");
+        System.out.println("    Heal: Can only health to max health. Heal will remove curses before repairing hearts.");
         System.out.println("- Stun vs Charm:");
         System.out.println("    Stun affects the master to be skipped.");
         System.out.println("    Charm affects a servant to be unusable.");
         System.out.println("- If a servant uses a noble phantasm without having a np loaded, they will sacrifice their lives");
+        System.out.println("- When adding loading full NP's onto a servant, a random chance of gaining 1 or 2.");
+        System.out.println("- When using a NP, the servant itself when choose its target.");
+        System.out.println("- npCharges are given in random amounts of 1 or 2 charges.");
+        System.out.println("- All effects should last one turn unless otherwise is said.");
+        System.out.println("- If you are eliminated, the game will continue without you. Terminate game. ");
         System.out.println();
     }
 
@@ -124,12 +131,12 @@ public class HolyGrailWar {
         // Assigns Heroic Spirits To The Masters + Printout Masters & Servants
         int masterNumber = 1;
         for (int i = 0; i < numOfMasters; i++) {
-            System.out.println("Master " + masterNumber + ", Servant(s): ");
+            System.out.print("Master " + masterNumber + ", Servant(s): ");
             for (int j = 0; j < numOfServants; j++) {
                 HeroicSpirit servant = throneOfHeroes.summonAny();
                 servant.setMasterID(masterNumber);
                 function.getMaster(masterNumber).getServantList().add(servant);
-                System.out.print(servant.getName() + " | ");
+                System.out.println(servant.getName() + " | ");
             }
             masterNumber++;
         }
@@ -151,10 +158,11 @@ public class HolyGrailWar {
 
     //Creates a Master's Hand w/ Items
     private void initialHand() {
-        int hand = 0;
-        for(Integer masterNumber : masters.keySet()) {
-            while (hand < 3) {
-                function.getMaster(masterNumber).getMasterItems().add(itemFromDrawPile());
+        int hand;
+        for(Master master : masters.values()){
+             hand = 0;
+            while(hand<3){
+                master.getMasterItems().add(itemFromDrawPile());
                 hand++;
             }
         }
@@ -167,18 +175,19 @@ public class HolyGrailWar {
         // iterate through the master objects, O(1) because only one should be left.
         for (Master master : masters.values()) {
             System.out.println("-----------------------------------------");
-            System.out.println("Master ID#" + master.getMasterID_Number() + " has " + master.getServantList().size() + " remaining servants.");
+            System.out.println("    THE HOLY GRAIL WAR HAS ENDED");
+            System.out.println("Master ID#" + master.getMasterID_Number() + " has " + master.getServantList().size() + " remaining servant(s).");
 
             // iterate through the linked list of heroic spirits
             for (HeroicSpirit servant : master.getServantList()) {
-                System.out.println(servant.getName() + " has " + servant.getHearts() + " left.");
+                System.out.println(servant.getName() + " has " + servant.getHearts() + " heart(s) left.");
             }
         }
 
         //Print Deceased Servants
-        for (String key : deceased.keySet()) {
+        for (String key : deceasedServants.keySet()) {
             System.out.println("---------------Defeated------------------");
-            System.out.println(deceased.get(key).getName() + " has 0 left.");
+            System.out.println(deceasedServants.get(key).getName() + " has 0 left.");
         }
     }
 
@@ -186,13 +195,14 @@ public class HolyGrailWar {
     public void winner() {
         for (Master master : masters.values()) {
             System.out.println("-----------------------------------------");
-            System.out.println("Master ID#" + master.getMasterID_Number() + " | and ");
+            System.out.print("Master ID#" + master.getMasterID_Number() + " and ");
 
             // iterate through the linked list of heroic spirits
             for (HeroicSpirit servant : master.getServantList()) {
-                System.out.println(servant.getName() + " | ");
+                System.out.print(servant.getName() + " | ");
             }
-            System.out.print(" are the Winner!");
+            function.newLine();
+            System.out.print("          are the Winners!");
         }
     }
 

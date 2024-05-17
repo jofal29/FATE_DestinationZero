@@ -6,7 +6,8 @@ import java.util.HashSet;
 public class HeroicSpirit implements Cloneable{
     private String name;	        private String gender;	 private String axis;	private String alignment;
     private String species;	        private String hg_class; private String npName;	private NoblePhantasm np;
-    private String noble_Phantasm;	private String skill;
+    private String noble_Phantasm;
+    private String skill;
 
     private String npStatus = "Enabled";
     private String skillSealed = "Enabled";
@@ -356,7 +357,6 @@ public class HeroicSpirit implements Cloneable{
     }
 
 
-
     public static HeroicSpirit clone(HeroicSpirit heroic_Spirits) {
         return heroic_Spirits;
     }
@@ -445,6 +445,44 @@ public class HeroicSpirit implements Cloneable{
         }
     }
 
+    public void addNp(){
+        npHeld++;
+    }
+
+    public void addNpCharge(){
+        npCharge++;
+    }
+    public void subtractNpCharge(){
+        npCharge--;
+    }
+
+    public void addCurse(){
+        curses++;
+    }
+    public void subtractCurse(){
+        curses--;
+    }
+
+    public void addNpHeld(){
+        npHeld++;
+    }
+    public void subtractNpHeld(){
+        npHeld--;
+    }
+
+    public void addDefense(){
+        defense++;
+    }
+    public void subtractDefense(){
+        defense--;
+    }
+
+    public void increaseMaxHealth(){
+        maxHealth++;
+    }
+    public void decreaseMaxHealth(){
+        maxHealth--;
+    }
 
     public void takeLife() {
         lives--;
@@ -459,20 +497,18 @@ public class HeroicSpirit implements Cloneable{
         }
     }
 
-    public void checkHealth() {
+    public void checkHealth(HeroicSpirit heroicSpirit) {
         if (hearts<=0) {
-            this.lives=this.lives-1;
+            lives--;
             if(lives>0) {
-                System.out.println(this.name + " -1 life");
-            }else {}
+                System.out.println(name + " -1 life");
+            }
         }
         else {
             if(defense>0)
             {
                 System.out.println(this.name+ ": " + defense + " Shields Active.");
             }
-            else {}
-
             System.out.println(this.name + ": " + hearts + " Health Remaining.");
         }
 
@@ -481,11 +517,33 @@ public class HeroicSpirit implements Cloneable{
             maxHealth = originalMaxHealth;
             hearts = maxHealth;
         }
-        else {}
-
         if(hearts>maxHealth) {
             hearts=maxHealth;
         }
+        if(lives<=0) {
+            HolyGrailWar.interimSpirits.add(heroicSpirit);
+        }
+    }
+
+    public void addNpSeals(){
+        npSeals++;
+    }
+    public void subtractNpSeals(){
+        npSeals--;
+    }
+
+    public void increaseTurnsFrozen(){
+        turnsFrozen++;
+    }
+    public void decreaseTurnsFrozen(){
+        turnsFrozen--;
+    }
+
+    public void increasedNpProtection(){
+        npProtection++;
+    }
+    public void decreaseNpProtection(){
+        npProtection--;
     }
 
     public void loseHearts() {
@@ -549,4 +607,5 @@ public class HeroicSpirit implements Cloneable{
             return "not immune";
         }
     }
+
 }
