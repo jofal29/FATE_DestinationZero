@@ -3,12 +3,6 @@ package Fate;
 import java.util.Random;
 
 public class Action {
-    Function function = new Function();
-
-    String itemName;
-    int count;
-    boolean isTrue = true;
-
     public void chooseSelfAction(String action, HeroicSpirit ownServant) {
         if(ownServant.checkImmune(action).equals("not immune")) {
             switch(action) {
@@ -65,6 +59,11 @@ public class Action {
                 break;
                 case "takeLife": {
                     enemyServant.takeLife();
+                    enemyServant.checkHealth(enemyServant);
+                }
+                break;
+                case "doubleAttack": {
+                    doubleAttack(ownMasterID, enemyServant);
                 }
                 break;
                 case "charm": {
@@ -83,6 +82,19 @@ public class Action {
         else {
             System.out.println(enemyServant.getName()+ " is immune to " + action);
         }
+    }
+    public void chooseOwnMasterAction(String action, int ownMasterID){
+        switch (action) {
+            case "commandSeal": {
+                commandSeal(ownMasterID);
+            }
+            break;
+            default:{
+                System.out.println("Oops");
+            }
+            break;
+        }
+
     }
 
     private void addNp(HeroicSpirit ownServant) {
@@ -105,8 +117,12 @@ public class Action {
         else {System.out.println("Max Health: "+targetedServant.getMaxHealth());}
         targetedServant.checkHealth(targetedServant);
     }
+    public void commandSeal(int ownMasterID) {
+        int randomOfTwo = new Random().nextBoolean() ? 1 : 2;
+        HolyGrailWar.masters.get(ownMasterID).drawItem(randomOfTwo);
+    }
     public void npCharge(HeroicSpirit ownServant) {
-        double randomOfTwo = new Random().nextBoolean() ? 1 : 2;
+        int randomOfTwo = new Random().nextBoolean() ? 1 : 2;
         for (int i=0; i<randomOfTwo; i++) {
             System.out.println(ownServant.getName() + " +1np charge");
             ownServant.addNpCharge();
@@ -137,6 +153,22 @@ public class Action {
 
         if(targetedServant.getHearts()==0) {
             targetedServant.setDeathbyAttack(true);
+        }
+    }
+    public void doubleAttack(int master, HeroicSpirit targetedServant) {
+
+        System.out.println("Master " + master + " sets out an double-damage attack on " + targetedServant.getName());
+        for(int i=0; i<2; i++) {
+            if (targetedServant.getDefense() > 0) {
+                targetedServant.subtractDefense();
+                System.out.println(targetedServant.getName() + " -1 Shield");
+            } else {
+                targetedServant.loseHearts();
+            }
+            targetedServant.checkHealth(targetedServant);
+            if (targetedServant.getHearts() <= 0) {
+                targetedServant.setDeathbyAttack(true);
+            }
         }
     }
     public void heal(HeroicSpirit ownServant) {

@@ -7,7 +7,7 @@ public class NoblePhantasm {
     private String name;
     private int ongoing = 0;
     int npUserMasterID;
-    HeroicSpirit servantNameInfo;
+    HeroicSpirit servantNameAndIDInfo;
 
     Effect servantDeath = new Effect();
 
@@ -79,7 +79,7 @@ public class NoblePhantasm {
                 h.setNoble_Phantasm("2NP:Eliminate All Servants From All Enemy Masters");
                 h.setNpRequired(2);
             }	break;
-            case "Cu Chulainn":{
+            case "CuChulainn":{
                 h.setNoble_Phantasm("(1 NP Required) Eliminate One");
                 h.setNpRequired(1);
             }	break;
@@ -97,7 +97,7 @@ public class NoblePhantasm {
                 h.setNoble_Phantasm("Summon argonaut servants.");
             }	break;
             case "Kama":{
-                h.setNoble_Phantasm("Charm all servants.");
+                h.setNoble_Phantasm("Charm all male servants. Chance of eliminating one.");
             }	break;
             case "Nitocris":{
                 h.setNoble_Phantasm("1NP(Required):Repeat Master's Turn||2NP(Required):Eliminate all king servants except Nitocris and Ozymandias.");
@@ -167,7 +167,15 @@ public class NoblePhantasm {
         System.out.println("*                                                                           *");
         System.out.println("*****************************************************************************");
     }
-
+    public void eliminateList(){
+        for(int i = 0; i< searchFunction.temp.size(); i++){
+            if(servantNameAndIDInfo != null) {
+                servantNameAndIDInfo = searchFunction.temp.get(i);
+                hitEnemyTarget("takeLife", servantNameAndIDInfo.getMasterID(), servantNameAndIDInfo.getName());
+            }
+        }
+        searchFunction.clearList();
+    }
     public void override(String npName, HeroicSpirit heroicSpirit) {
         switch(npName) {
             case "Arash":{
@@ -181,6 +189,8 @@ public class NoblePhantasm {
         if(heroicSpirit.isSacrifice()) {
             heroicSpirit.takeLife();
             System.out.println(heroicSpirit.getName()+" has used their spirit origin to use their NP. Fading away...");
+            heroicSpirit.checkHealth(heroicSpirit);
+            HolyGrailWar.deceasedMasters.add(heroicSpirit.getMasterID());
             play.playAnalysis();
         }
     }
@@ -196,9 +206,9 @@ public class NoblePhantasm {
                 System.out.println("			 "+"Noble Phantasm, Troias Tragōidia!");
                 searchFunction.targetServants("Any","Any");
                 searchFunction.removeSelfTeammatesOrSpecificName("Achilles", npUserMasterID);
-                servantNameInfo = searchFunction.servantChoice();
-                if(servantNameInfo != null) {
-                    hitEnemyTarget("takeLife", npUserMasterID, servantNameInfo.getName());
+                servantNameAndIDInfo = searchFunction.randomServantChoice();
+                if(servantNameAndIDInfo != null) {
+                    hitEnemyTarget("takeLife", servantNameAndIDInfo.getMasterID(), servantNameAndIDInfo.getName());
                 }
                 searchFunction.clearList();
                 servant.selfSacrifice();
@@ -212,8 +222,8 @@ public class NoblePhantasm {
                     System.out.println("			 "+"Noble Phantasm, Akhilleus Kosmos");
                     searchFunction.targetSelfAndTeammates(npUserMasterID);
                     for(int i = 0; i< searchFunction.temp.size(); i++){
-                        servantNameInfo = searchFunction.temp.get(i);
-                        hitOwnServants("protectFromNP",npUserMasterID, servantNameInfo.getName());
+                        servantNameAndIDInfo = searchFunction.temp.get(i);
+                        hitOwnServants("protectFromNP",servantNameAndIDInfo.getMasterID(), servantNameAndIDInfo.getName());
                     }
                     servant.subtractNpHeld();
                     servant.subtractNpHeld();
@@ -227,23 +237,19 @@ public class NoblePhantasm {
         System.out.println("			"+"Noble Phantasm... STELLAAAAA!!");
         searchFunction.targetServants("Master","AnyMaster");
         searchFunction.removeSelfTeammatesOrSpecificName("Arash", npUserMasterID);
-        servantNameInfo = searchFunction.servantChoice();
-        for(int i = 0; i< searchFunction.temp.size(); i++){
-            if(servantNameInfo != null) {
-                servantNameInfo = searchFunction.temp.get(i);
-                hitEnemyTarget("takeLife", npUserMasterID, servantNameInfo.getName());
-            }
-        }
-        searchFunction.clearList();
+        servantNameAndIDInfo = searchFunction.randomServantChoice();
+        eliminateList();
         servant.selfSacrifice();
     }
     private void artoriaNP(HeroicSpirit servant) {
 
         //NP Required = 2
         System.out.println("			  "+"Noble Phantasm... EXCALIBUR!!");
-        searchFunction.targetServants("Any","Any");
+        searchFunction.targetServants("Master","AnyMaster");
         searchFunction.removeSelfTeammatesOrSpecificName("Artoria", npUserMasterID);
-        hitTarget(servant, searchFunction.temp.size());
+        eliminateList();
+        servant.subtractNpHeld();
+        servant.subtractNpHeld();
     }
     private void atalanteNP(HeroicSpirit servant) {
         System.out.println("  "+"Noble Phantasm...  Phoebus Catastrophe:Complaint Message on the Arrow!!");
@@ -252,47 +258,38 @@ public class NoblePhantasm {
         if(servant.getNP_Status().equals("Enabled")){
             searchFunction.removeType("Child");
         }
-        hitTarget(servant, searchFunction.temp.size());
+        eliminateList();
+        servant.subtractNpHeld();
     }
     private void heraclesNP(HeroicSpirit servant) {
         System.out.println("	Noble Phantasm... Nine Lives: Shooting the Hundred Heads");
         searchFunction.targetServants("Any","Any");
         searchFunction.removeSelfTeammatesOrSpecificName("Heracles", npUserMasterID);
-        hitTarget(servant, searchFunction.temp.size());
-    }
-
-    private void hitTarget(HeroicSpirit servant, int limit) {
-        servantNameInfo = searchFunction.servantChoice();
-        for(int i = 0; i<limit; i++){
-            servantNameInfo = searchFunction.temp.get(i);
-            if(servantNameInfo != null) {
-                hitEnemyTarget("takeLife", npUserMasterID, servantNameInfo.getName());
-            }
-        }
+        eliminateList();
         servant.subtractNpHeld();
-        searchFunction.clearList();
     }
 
     private void emiyaNP(HeroicSpirit servant) {
         System.out.println("	 "+"I am the bone of my sword... Unlimited BladeWorks");
         searchFunction.targetServants("Species","Human");
         searchFunction.removeSelfTeammatesOrSpecificName("Emiya", npUserMasterID);
-        servantNameInfo = searchFunction.servantChoice();
+        servantNameAndIDInfo = searchFunction.randomServantChoice();
         if(searchFunction.temp.size()>=3) {
             for (int i = 0; i < 3; i++) {
-                servantNameInfo = searchFunction.temp.get(i);
-                if (servantNameInfo != null) {
-                    hitEnemyTarget("takeLife", npUserMasterID, servantNameInfo.getName());
+                servantNameAndIDInfo = searchFunction.temp.get(i);
+                if (servantNameAndIDInfo != null) {
+                    hitEnemyTarget("takeLife", servantNameAndIDInfo.getMasterID(), servantNameAndIDInfo.getName());
                 }
             }
             servant.subtractNpHeld();
             searchFunction.clearList();
         }
         else{
-            if(servantNameInfo != null) {
-                searchFunction.targetServants("Any", "Any");
-                searchFunction.removeSelfTeammatesOrSpecificName("Emiya", npUserMasterID);
-                hitEnemyTarget("takeLife", npUserMasterID, servantNameInfo.getName());
+            searchFunction.targetServants("Any", "Any");
+            searchFunction.removeSelfTeammatesOrSpecificName("Emiya", npUserMasterID);
+            servantNameAndIDInfo = searchFunction.randomServantChoice();
+            if(servantNameAndIDInfo != null) {
+                hitEnemyTarget("takeLife", servantNameAndIDInfo.getMasterID(), servantNameAndIDInfo.getName());
             }
             servant.subtractNpHeld();
             searchFunction.clearList();
@@ -302,9 +299,9 @@ public class NoblePhantasm {
         System.out.println("			 "+"==Noble Phantasm==");
         searchFunction.targetServants("Any","Any");
         searchFunction.removeSelfTeammatesOrSpecificName("Euryale", npUserMasterID);
-        servantNameInfo = searchFunction.servantChoice();
-            if(servantNameInfo != null) {
-                hitEnemyTarget("takeLife", npUserMasterID, servantNameInfo.getName());
+        servantNameAndIDInfo = searchFunction.randomServantChoice();
+            if(servantNameAndIDInfo != null) {
+                hitEnemyTarget("takeLife", servantNameAndIDInfo.getMasterID(), servantNameAndIDInfo.getName());
             }
         servant.subtractNpHeld();
         searchFunction.clearList();
@@ -314,13 +311,13 @@ public class NoblePhantasm {
         System.out.println("		    	"+"==COME MY ARGONAUTS==");
         searchFunction.targetServants("Extra","Argonaut");
         searchFunction.removeSelfTeammatesOrSpecificName("Jason", npUserMasterID);
-        servantNameInfo = searchFunction.servantChoice();
+        servantNameAndIDInfo = searchFunction.randomServantChoice();
         for(int i = 0; i< searchFunction.temp.size(); i++){
-            servantNameInfo = searchFunction.temp.get(i);
-            if(servantNameInfo != null) {
-                System.out.println(servantNameInfo.getName()+" has changed masters ("+servantNameInfo.getMasterID()+"->"+npUserMasterID);
-                HolyGrailWar.masters.get(servantNameInfo.getMasterID()).decreaseServants();
-                System.out.println("Master "+HolyGrailWar.masters.get(servantNameInfo.getMasterID()) + " has "+HolyGrailWar.masters.get(servantNameInfo.getMasterID()).getNumOfServants() + " left.");
+            servantNameAndIDInfo = searchFunction.temp.get(i);
+            if(servantNameAndIDInfo != null) {
+                System.out.println(servantNameAndIDInfo.getName()+" has changed masters ("+ servantNameAndIDInfo.getMasterID()+"->"+npUserMasterID);
+                HolyGrailWar.masters.get(servantNameAndIDInfo.getMasterID()).decreaseServants();
+                System.out.println("Master "+HolyGrailWar.masters.get(servantNameAndIDInfo.getMasterID()) + " has "+HolyGrailWar.masters.get(servantNameAndIDInfo.getMasterID()).getNumOfServants() + " left.");
                 play.updateMasters();
             }
         }
@@ -359,15 +356,27 @@ public class NoblePhantasm {
     private void kamaNP(HeroicSpirit servant) {
         System.out.println("				"+"--Noble Phantasm.--");
         searchFunction.targetServants("Gender","M");
-        servantNameInfo = searchFunction.servantChoice();
+        servantNameAndIDInfo = searchFunction.randomServantChoice();
         for(int i = 0; i< searchFunction.temp.size(); i++){
-            servantNameInfo = searchFunction.temp.get(i);
-            if(servantNameInfo != null) {
-                hitEnemyTarget("charm", npUserMasterID, servantNameInfo.getName());
+            servantNameAndIDInfo = searchFunction.temp.get(i);
+            if(servantNameAndIDInfo != null) {
+                hitEnemyTarget("charm", servantNameAndIDInfo.getMasterID(), servantNameAndIDInfo.getName());
             }
         }
-        servant.subtractNpHeld();
-        searchFunction.clearList();
+        int randomOfTwo = new Random().nextBoolean() ? 1 : 2;
+        if(randomOfTwo==1){
+            searchFunction.clearList();
+            searchFunction.targetServants("Any", "Any");
+            searchFunction.removeSelfTeammatesOrSpecificName("Kama", npUserMasterID);
+            hitEnemyTarget("takeLife", servantNameAndIDInfo.getMasterID(), searchFunction.randomServantChoice().getName());
+            searchFunction.clearList();
+            servant.subtractNpHeld();
+        }
+        else{
+            searchFunction.clearList();
+            servant.subtractNpHeld();
+        }
+
     }
     private void nitocrisNP(HeroicSpirit servant) {
         int randomNP = new Random().nextBoolean() ? 1 : 2;
@@ -375,7 +384,7 @@ public class NoblePhantasm {
             case 1:{
                 System.out.println("	     "+"Noble Phantasm... Anpu Neb Ta Djeser...");
                 System.out.println("         "+"    Giving master an extra turn...");
-                HolyGrailWar.masters.get(npUserMasterID).addExtraTurn();
+                HolyGrailWar.masters.get(servant.getMasterID()).addExtraTurn();
                 play.playAnalysis();
                 servant.subtractNpHeld();
             }break;
@@ -390,12 +399,20 @@ public class NoblePhantasm {
                     {
                         searchFunction.targetServants("Extra","King");
                         searchFunction.removeSelfTeammatesOrSpecificName("Ozymandias", servant.getMasterID());
-                        servantNameInfo = searchFunction.servantChoice();
-                        if(servantNameInfo != null) {
-                            hitEnemyTarget("takeLife", npUserMasterID, servantNameInfo.getName());
+                        servantNameAndIDInfo = searchFunction.randomServantChoice();
+                        if(servantNameAndIDInfo != null) {
+                            hitEnemyTarget("takeLife", servantNameAndIDInfo.getMasterID(), servantNameAndIDInfo.getName());
                         }
                         servant.subtractNpHeld();
                     }
+                    searchFunction.targetServants("Any", "Any");
+                    searchFunction.removeSelfTeammatesOrSpecificName("Nitocris", -1);
+                    servantNameAndIDInfo = searchFunction.randomServantChoice();
+                    if(servantNameAndIDInfo != null) {
+                        hitEnemyTarget("takeLife", servantNameAndIDInfo.getMasterID(), servantNameAndIDInfo.getName());
+                    }
+                    servant.subtractNpHeld();
+                    searchFunction.clearList();
                     searchFunction.clearList();
                     servant.selfSacrifice();}
             }break;
@@ -405,11 +422,11 @@ public class NoblePhantasm {
         System.out.println("				 "+"==Noble Phantasm==");
         searchFunction.targetServants("Any","Any");
         searchFunction.removeSelfTeammatesOrSpecificName("William Shakespeare", npUserMasterID);
-        servantNameInfo = searchFunction.servantChoice();
-            if(servantNameInfo != null) {
-                addRestriction("William Shakespeare", npUserMasterID, servantNameInfo.getName());
-                hitEnemyTarget("takeLife", npUserMasterID, servantNameInfo.getName());
-                ongoingHit("disableNP",1,npUserMasterID,servantNameInfo.getName());
+        servantNameAndIDInfo = searchFunction.randomServantChoice();
+            if(servantNameAndIDInfo != null) {
+                addRestriction("William Shakespeare", servantNameAndIDInfo.getMasterID(), servantNameAndIDInfo.getName());
+                hitEnemyTarget("takeLife", servantNameAndIDInfo.getMasterID(), servantNameAndIDInfo.getName());
+                ongoingHit("disableNP",1,servantNameAndIDInfo.getMasterID(), servantNameAndIDInfo.getName());
             }
         servant.subtractNpHeld();
         searchFunction.clearList();

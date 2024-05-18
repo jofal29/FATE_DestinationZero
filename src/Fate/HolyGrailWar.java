@@ -35,6 +35,7 @@ public class HolyGrailWar {
     }
 
     private void displayRules() {
+        System.out.println("    WELCOME TO FATE/DESTINATION ZERO (by Jeffrey J Ofalla):");
         System.out.println("Rules:");
         System.out.println("- Players are known as Masters. Servants are magically created characters (Heroic Spirits) that are based off Legends and History.");
         System.out.println("- Each master starts with a servant. Last master with a servant in the game wins.");
@@ -49,6 +50,7 @@ public class HolyGrailWar {
         System.out.println("    Curse: Removes 1 Max Health from a servant.");
         System.out.println("    Shield: Can only be applied to own servants.");
         System.out.println("    Heal: Can only health to max health. Heal will remove curses before repairing hearts.");
+        System.out.println("    Command Seal: Randomly draw 1 or 2 cards.");
         System.out.println("- Stun vs Charm:");
         System.out.println("    Stun affects the master to be skipped.");
         System.out.println("    Charm affects a servant to be unusable.");

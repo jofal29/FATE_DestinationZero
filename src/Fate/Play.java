@@ -1,8 +1,5 @@
 package Fate;
 
-import java.util.ArrayList;
-import java.util.Random;
-
 public class Play {
     Function function = new Function();
 
@@ -48,18 +45,25 @@ public class Play {
                             function.getMaster(currentMasterTurn).masterTurn();
                             playAnalysis();
                             function.newLine();
-                            if(!function.getMaster(currentMasterTurn).hasExtraTurn()){
-                                isTrue = false;
+                            if(HolyGrailWar.deceasedMasters.contains(currentMasterTurn)) {
+                                isTrue=false;
                             }
-
+                            if(!function.getMaster(currentMasterTurn).hasAnExtraTurn() && function.getMaster(currentMasterTurn) != null) {
+                                isTrue = false;
+                                function.getMaster(currentMasterTurn).removeExtraTurns();
+                            }
                         }
                         //Bot Turn
                         else {
                             function.getMaster(currentMasterTurn).botTurn();
                             playAnalysis();
                             function.newLine();
-                            if(!function.getMaster(currentMasterTurn).hasExtraTurn()){
+                            if(HolyGrailWar.deceasedMasters.contains(currentMasterTurn)) {
+                                isTrue=false;
+                            }
+                            if(!function.getMaster(currentMasterTurn).hasAnExtraTurn()){
                                 isTrue = false;
+                                function.getMaster(currentMasterTurn).removeExtraTurns();
                             }
 
                         }

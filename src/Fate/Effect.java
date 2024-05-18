@@ -24,8 +24,7 @@ public class Effect {
     private void arashSkillDeathEffect(String deathName) {
         if(HolyGrailWar.deceasedServants.get(deathName).getNP_Status().equals("Enabled")){
             if(HolyGrailWar.deceasedServants.get(deathName).getNpCharge()==2) {
-                if(HolyGrailWar.deceasedServants.get(deathName).isSacrifice())
-                {}else {
+                if(!HolyGrailWar.deceasedServants.get(deathName).isSacrifice()){
                     System.out.println("But with his last breath & 2np charges, he activates his");
                     HolyGrailWar.deceasedServants.get(deathName).setNpCharge(0);
                     HolyGrailWar.deceasedServants.get(deathName).addNp();

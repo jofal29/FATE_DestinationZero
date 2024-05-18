@@ -24,5 +24,7 @@ public class Dictionary {
         itemDictionary.add("takeLike");
         itemDictionary.add("protectFromNP");
         itemDictionary.add("useNP");
+        itemDictionary.add("commandSeal");
+        itemDictionary.add("doubleAttack");
     }
 }

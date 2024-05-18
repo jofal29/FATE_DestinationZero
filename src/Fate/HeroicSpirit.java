@@ -490,6 +490,7 @@ public class HeroicSpirit implements Cloneable{
         {
             hearts = maxHealth;
             System.out.println(name + " loses a life.");
+            System.out.println(lives + " lives left.");
         }
         else
         {
@@ -520,8 +521,14 @@ public class HeroicSpirit implements Cloneable{
         if(hearts>maxHealth) {
             hearts=maxHealth;
         }
+        ifDead(heroicSpirit);
+    }
+    public void ifDead(HeroicSpirit heroicSpirit){
         if(lives<=0) {
             HolyGrailWar.interimSpirits.add(heroicSpirit);
+            if(HolyGrailWar.masters.get(heroicSpirit.getMasterID()).getNumOfServants()==1) {
+                HolyGrailWar.deceasedMasters.remove(heroicSpirit.getMasterID());
+            }
         }
     }
 

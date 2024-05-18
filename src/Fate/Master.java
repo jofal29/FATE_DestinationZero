@@ -2,11 +2,11 @@ package Fate;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.Objects;
 import java.util.Random;
 
 public class Master {
     Function function = new Function();
+    Play play = new Play();
     Action action = new Action();
     Random randomGenerator = new Random();
 
@@ -40,7 +40,7 @@ public class Master {
         boolean itemUsed = false;
 
         if(turnCheck()) {
-            drawItem();
+            drawItem(1);
             count=0;
             while (!itemUsed){
                 itemChoice = chooseItem();
@@ -77,14 +77,28 @@ public class Master {
                     action.chooseSelfAction(itemChoice, chooseOwnServant());
                 }
                 if (itemChoice.equals("attack") || itemChoice.equals("curse")
-                        || itemChoice.equals("charm") || itemChoice.equals("npSeal")) {
+                        || itemChoice.equals("charm") || itemChoice.equals("npSeal") || itemChoice.equals("doubleAttack")) {
                     action.chooseEnemyAction(itemChoice, masterID_Number, chooseEnemyServant());
                 }
                 if(itemChoice.equals("stun")){
                     action.chooseAMasterAction(itemChoice, chooseAMaster(), masterID_Number);
                 }
+                if(itemChoice.equals("commandSeal")){
+                    action.chooseOwnMasterAction(itemChoice, masterID_Number);
+                }
+                if(HolyGrailWar.deceasedMasters.contains(masterID_Number)) {
+                    itemUsed = true;
+                }
                 function.newLine();
                 count++;
+                for(HeroicSpirit heroicSpirit : servantList){
+                    heroicSpirit.ifDead(heroicSpirit);
+                }
+                play.playAnalysis();
+                if(servantList==null){
+                    itemUsed=true;
+                }
+
                 if(!masterItems.isEmpty()) {
                     if (count < 3) {
                         System.out.println("Would you like to play another item? 'yes' or 'no'");
@@ -127,7 +141,7 @@ public class Master {
         boolean itemUsed = false;
 
         if(turnCheck()) {
-            drawItem();
+            drawItem(1);
             count=0;
             while (!itemUsed){
                 function.pause(2);
@@ -146,12 +160,19 @@ public class Master {
                         || itemChoice.equals("addNp") || itemChoice.equals("heal")) {
                     action.chooseSelfAction(itemChoice, randomOwnServant());
                 }
-                if (itemChoice.equals("attack") || itemChoice.equals("curse")
+                if (itemChoice.equals("attack") || itemChoice.equals("curse") ||
+                        itemChoice.equals("doubleAttack")
                         || itemChoice.equals("charm") || itemChoice.equals("npSeal")) {
                     action.chooseEnemyAction(itemChoice, masterID_Number,randomEnemyServant());
                 }
                 if(itemChoice.equals("stun")){
                     action.chooseAMasterAction(itemChoice, randomEnemyMaster(), masterID_Number);
+                }
+                if(itemChoice.equals("commandSeal")){
+                    action.chooseOwnMasterAction(itemChoice, masterID_Number);
+                }
+                if(HolyGrailWar.deceasedMasters.contains(masterID_Number)) {
+                    itemUsed = true;
                 }
                 count++;
                 if(!masterItems.isEmpty()) {
@@ -180,11 +201,19 @@ public class Master {
 
 
 
-    public void drawItem(){
+    public void drawItem(int numOfCardsToDraw){
         //Get random Items Object and Add Into Master's ArrayList<Items>
-        System.out.println("Master " + masterID_Number + " is drawing a card...");
-        function.newLine();
-        masterItems.add(HolyGrailWar.itemFromDrawPile());
+        if(numOfCardsToDraw==1) {
+            System.out.println("Master " + masterID_Number + " is drawing " + numOfCardsToDraw + " card...");
+            function.newLine();
+        }
+        else{
+            System.out.println("Master " + masterID_Number + " is drawing " + numOfCardsToDraw + " cards...");
+            function.newLine();
+        }
+        for(int i=0; i<numOfCardsToDraw; i++){
+            masterItems.add(HolyGrailWar.itemFromDrawPile());
+        }
         function.pause(1);
         displayItems();
     }
@@ -215,6 +244,9 @@ public class Master {
                 masterChoice = Integer.parseInt(UserInput.getInput());
             } catch (NumberFormatException e) {
                 System.out.println("Invalid input. Please enter the correct master number.");
+            }
+            if (!HolyGrailWar.masters.containsKey(masterChoice) || masterChoice==masterID_Number) {
+                System.out.println("Invalid master number. Please enter a valid master number.");
             }
         }
         return masterChoice;
@@ -276,6 +308,9 @@ public class Master {
                     servantChoice = Integer.parseInt(UserInput.getInput()) - 1;
                 } catch (NumberFormatException e) {
                     System.out.println("Invalid input. Please enter a number.");
+                }
+                if (servantChoice < 0 || servantChoice >= HolyGrailWar.masters.get(masterChoice).getServantList().size()) {
+                    System.out.println("Invalid servant number. Please enter a valid servant number.");
                 }
             }
             return HolyGrailWar.masters.get(masterChoice).getServantList().get(servantChoice);
@@ -350,7 +385,7 @@ public class Master {
             heroicSpirit.subtractDurationEffect();
         }
     }
-    public boolean hasExtraTurn() {
+    public boolean hasAnExtraTurn() {
         if(extraTurns>0) {
             System.out.println("		  	    *Master #: "+masterID_Number +"'s Extra Turn:*");
             return true;
@@ -391,7 +426,7 @@ public class Master {
                 System.out.println("Noble Phantasm Sealed. " + chosenSpirit.getName() + " cannot activate NP.");
             } else {
                 NoblePhantasm hogu = new NoblePhantasm();
-                hogu.activate(chosenSpirit);
+                hogu.activate(servantList.get(choice));
             }
         }
     }

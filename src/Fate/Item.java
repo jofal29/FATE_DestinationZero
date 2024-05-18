@@ -29,7 +29,7 @@ public class Item {
                 }
                 break;
                 case 4: {
-                    this.itemName = "attack";
+                    this.itemName = "commandSeal";
                     }
                 break;
                 case 5: {
@@ -53,7 +53,7 @@ public class Item {
                     }
                 break;
                 case 10:{
-                    this.itemName = "attack";
+                    this.itemName = "doubleAttack";
                 }
                 break;
                 default: {

@@ -63,16 +63,15 @@ public class Keyword {
                             }
                         }
                         if (keyword.equals("AnyMaster")) {
-                            mast = servant.getMasterID();
-                            while(mast == servant.getMasterID() || !HolyGrailWar.masters.containsKey(mast)){
+                            while(!HolyGrailWar.masters.containsKey(mast)){
                                 mast = rand.nextInt(HolyGrailWar.masters.size());
                             }
                             System.out.println("Random Master: "+mast);
                             temp.addAll(HolyGrailWar.masters.get(mast).getServantList());
                         }
-                        else {
-                            temp.addAll(HolyGrailWar.masters.get(Integer.parseInt(keyword)).getServantList());
-                        }
+                        break;
+                    case "SpecificMaster":
+                        temp.addAll(HolyGrailWar.masters.get(Integer.parseInt(keyword)).getServantList());
                         break;
                     case "Any":
                         temp.addAll(getAllServants());
@@ -80,7 +79,7 @@ public class Keyword {
                     case "Extra":
                         for(Master masterID : HolyGrailWar.masters.values()){
                             for(HeroicSpirit heroicSpirit : masterID.getServantList()){
-                                if(heroicSpirit.getExtraTraits().contains(keyword)){
+                                if(heroicSpirit.getExtraTraits().equals(keyword)){
                                     temp.add(heroicSpirit);
                                 }
                             }
@@ -103,7 +102,7 @@ public class Keyword {
         return allServants;
     }
 
-    public HeroicSpirit servantChoice() {
+    public HeroicSpirit randomServantChoice() {
         if(temp.size()<=0) {
             System.out.println("No more enemy servants under that attribute");
             return null;
@@ -112,7 +111,7 @@ public class Keyword {
             int randomAllignedServant = rand.nextInt(temp.size());
             HeroicSpirit tempServant = temp.get(randomAllignedServant);
             temp.remove(randomAllignedServant);
-            System.out.println("Servant Choice: " + tempServant.getName());
+            System.out.println("Targeted Servant Choice: " + tempServant.getName());
             return tempServant;
         }
     }
